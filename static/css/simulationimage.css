@@ -1,0 +1,273 @@
+/* --- Modal CSS Adjustments for TRUE Full Screen --- */
+#iframe-modal .sim-modal-inner {
+  width: 100%; /* Allow full width */
+  height: 100%; /* Allow full height */
+  max-width: none; /* REMOVE max-width constraint from simulation.css */
+  max-height: none; /* Remove max-height constraint */
+  border-radius: 0; /* Remove rounded corners */
+  margin: 0; /* Ensure no margin */
+  padding: 0; /* Ensure no padding */
+  transform: none; /* Remove any scaling transforms */
+  box-shadow: none; /* Remove any shadow */
+  border: none; /* Remove any border */
+  background: none; /* Ensure no background interfering */
+}
+#iframe-modal {
+  /* Keep fixed positioning and basic setup */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%; /* Full viewport width */
+  height: 100%; /* Full viewport height */
+  background-color: rgba(0, 0, 0, 0.8); /* Backdrop */
+  z-index: 1050; /* Ensures it's on top */
+  display: none; /* Hidden by default */
+  /* REMOVE padding: The content box will now go edge-to-edge */
+  /* padding: 15px; */
+  /* Flex centering is less relevant now, but harmless */
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+#iframe-modal.active {
+  display: flex; /* Or display: block; if flex centering isn't needed */
+}
+
+.iframe-modal-content {
+  /* Let content take up the ENTIRE modal area */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column; /* Stacks title and body vertically */
+  overflow: hidden; /* Prevent modal itself scrolling */
+  /* Styling */
+  background: rgba(30, 33, 37, 0.9); /* Slightly more opaque background? */
+  backdrop-filter: blur(8px); /* Adjust blur */
+  -webkit-backdrop-filter: blur(8px);
+  /* REMOVE border-radius for edge-to-edge */
+  /* border-radius: 8px; */
+  /* REMOVE border if you want seamless edge */
+  /* border: 1px solid rgba(255, 255, 255, 0.1); */
+  box-shadow: none; /* Remove shadow if truly edge-to-edge */
+  position: relative; /* Needed for absolute positioning of close button */
+  color: #fff; /* Ensure default text color is visible */
+}
+
+#iframe-modal-title {
+  margin: 0;
+  /* ADD internal padding for the title text */
+  padding: 15px 50px 15px 20px; /* Top, Right (for close btn), Bottom, Left */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0; /* Prevent title from shrinking */
+  font-size: 1.1rem; /* Adjust size as needed */
+  font-weight: 600; /* Example */
+}
+
+/* In your CSS */
+#iframe-modal-body {
+  flex-grow: 1;
+  overflow: hidden; /* IMPORTANT: Prevents this container from scrolling */
+  padding: 0;
+  background-color: #fff; /* Or appropriate background */
+}
+
+#iframe-modal-body iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block; /* Prevent extra space below iframe */
+}
+
+#close-iframe-modal {
+  /* Position absolutely within the content box */
+  position: absolute;
+  /* Adjust position to look good against the edges */
+  top: 10px;
+  right: 15px;
+  z-index: 10; /* Above title/content */
+  /* Ensure styling matches other close buttons */
+  background: transparent;
+  border: none;
+  font-size: 1.8rem; /* Adjust size */
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+#close-iframe-modal:hover {
+  color: #fff;
+}
+
+/* In simulation.css or mobile.css (loaded AFTER simulationimage.css) */
+@media (max-width: 768px) {
+  /* Mobile breakpoint */
+  #iframe-modal.sim-modal {
+    padding: 15px;
+  }
+
+  #iframe-modal .iframe-modal-content {
+    width: 95vw;
+    max-width: 550px;
+    height: 85vh; /* Has explicit viewport-relative height */
+    max-height: 750px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex; /* Ensures flex properties apply */
+    flex-direction: column;
+    overflow: hidden; /* Prevent content box itself from scrolling */
+  }
+
+  #iframe-modal #iframe-modal-body {
+    flex-grow: 1; /* Takes remaining space from flex parent */
+    overflow: hidden; /* CRITICAL: This div should NOT scroll */
+    padding: 0;
+    background-color: #fff; /* Set background color */
+    position: relative; /* Needed for some positioning contexts */
+    /* --- Add these --- */
+    height: 100%; /* Explicitly try setting height to fill flex space */
+    -webkit-overflow-scrolling: touch; /* Crucial hint for iOS momentum scrolling */
+  }
+
+  /* Ensure iframe fills the body */
+  #iframe-modal #iframe-modal-body iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+}
+
+/* Inside simulation.css */
+
+/* --- 8. Debrief Modal (#debrief-modal) --- */
+/* ... existing modal styles ... */
+
+/* Styling for the new User Feedback Section */
+.user-feedback-section {
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.user-feedback-section h4 {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.star-rating-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Space between stars */
+  margin-bottom: 25px;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  color: var(--warning-yellow); /* Color for stars */
+  line-height: 1;
+  transition: transform 0.1s ease, color 0.2s ease;
+}
+
+.star-btn svg {
+  width: 28px; /* Adjust size as needed */
+  height: 28px;
+  display: block;
+}
+
+.star-btn:hover {
+  transform: scale(1.15);
+  color: #ffeb3b; /* Brighter yellow on hover */
+}
+.star-btn:focus {
+  outline: 2px solid var(--neon-cyan); /* Accessibility focus */
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Style for stars *after* the selected one on hover */
+/* .star-rating-container:hover .star-btn { color: #ffeb3b; } */
+/* .star-rating-container .star-btn:hover ~ .star-btn { color: var(--warning-yellow); } */
+
+.feedback-input-container {
+  margin-top: 15px;
+  margin-bottom: 20px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out, opacity 0.3s ease-out,
+    margin-top 0.4s ease-out;
+  border: 1px solid transparent; /* For transition */
+}
+
+.feedback-input-container.visible {
+  max-height: 200px; /* Adjust max height as needed */
+  opacity: 1;
+  margin-top: 25px; /* Add margin when visible */
+  border-color: var(--glass-border); /* Add border */
+  border-radius: 6px;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.feedback-label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.feedback-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--glass-border);
+  background-color: rgba(0, 0, 0, 0.3);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: var(--font-sans);
+  resize: vertical;
+  transition: border-color var(--transition-fast),
+    background-color var(--transition-fast);
+  min-height: 60px;
+}
+.feedback-textarea:focus {
+  outline: none;
+  border-color: var(--neon-cyan);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.feedback-submit-area {
+  text-align: center;
+  margin-top: 10px;
+}
+
+#submit-rating-btn {
+  /* Reuse existing .btn styles */
+  min-width: 150px;
+}
+#submit-rating-btn:disabled {
+  /* Styles already defined in base .btn:disabled */
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.rating-submit-status {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  min-height: 1.2em; /* Reserve space */
+  color: var(--neon-green); /* Default to success color */
+  font-style: italic;
+}
+.rating-submit-status.error {
+  color: var(--alert-red);
+}

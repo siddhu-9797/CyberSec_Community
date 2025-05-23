@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enter The Breach: Pressure Chamber</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>"
+    />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Outfit:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Link CSS -->
+    <link rel="stylesheet" href="/static/css/simulationimage.css" />
+
+    <link rel="stylesheet" href="/static/css/simulation.css" />
+
+    <link rel="stylesheet" href="/static/css/simulationneeded.css" />
+
+    <script type="text/javascript">
+      (function (c, l, a, r, i, t, y) {
+        c[a] =
+          c[a] ||
+          function () {
+            (c[a].q = c[a].q || []).push(arguments);
+          };
+        t = l.createElement(r);
+        t.async = 1;
+        t.src = "https://www.clarity.ms/tag/" + i;
+        y = l.getElementsByTagName(r)[0];
+        y.parentNode.insertBefore(t, y);
+      })(window, document, "clarity", "script", "rc6mnl7m9k");
+    </script>
+  </head>
+  <body>
+    <div class="simulation-wrapper">
+      <div id="setup-screen" class="setup-screen active">
+        <!-- Setup content box now handles internal scrolling -->
+        <div class="setup-content glass-morphism">
+          <h1 class="setup-title">Configure Simulation</h1>
+
+          <div class="setup-options">
+            <div class="setup-group">
+              <label for="scenario-select">Select Scenario:</label>
+              <select id="scenario-select">
+                <option value="" disabled selected>
+                  -- Select a Scenario --
+                </option>
+                <option value="Ransomware">Ransomware Crisis</option>
+                <option value="DDoS">DDoS Overload</option>
+                <option value="Critical Data Breach">
+                  Critical Data Breach
+                </option>
+                <option value="Insider Threat">Insider Threat</option>
+                <!-- scenarios -->
+              </select>
+            </div>
+            <div class="setup-group">
+              <label for="intensity-select">Select Intensity:</label>
+              <select id="intensity-select">
+                <option value="Low">Low (Easier)</option>
+                <option value="Medium" selected>Medium (Standard)</option>
+                <option value="High">High (Challenging)</option>
+              </select>
+            </div>
+            <div class="setup-group">
+              <label for="duration-select">Duration (Minutes):</label>
+              <input
+                type="number"
+                id="duration-select"
+                value="15"
+                min="1"
+                max="20"
+                step="5"
+              />
+            </div>
+          </div>
+
+          <div
+            id="scenario-explanation-area"
+            class="scenario-explanation hidden"
+          ></div>
+
+          <button id="start-sim-button" class="btn btn-primary btn-launch">
+            Initialize Pressure Chamber
+          </button>
+
+          <div id="setup-error" class="setup-error-message"></div>
+        </div>
+      </div>
+      <div id="simulation-interface" class="simulation-interface">
+        <header class="sim-header">
+          <div class="sim-title">
+            <span id="sim-scenario-title">Scenario</span> -
+            <span id="sim-player-info"></span>
+          </div>
+
+          <!-- Group Time, Org Chart Button, and Status Together -->
+          <div class="sim-header-right-controls">
+            <div class="sim-time-display">
+              <span id="sim-time-clock">00:00:00</span> /
+              <span id="sim-end-time">00:30:00</span> (<span id="sim-intensity"
+                >1.0x</span
+              >
+              Intensity)
+            </div>
+
+            <!-- NEW: Org Chart Button -->
+            <button
+              id="show-org-chart-btn"
+              class="btn-header-action"
+              aria-label="Show Organization Chart"
+              title="Show Organization Chart"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-people"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4"
+                />
+              </svg>
+            </button>
+            <!-- End NEW Org Chart Button -->
+
+            <div id="sim-status-indicator" class="sim-status running">
+              <span class="status-dot"></span>
+              <span id="sim-status-text">Running</span>
+            </div>
+          </div>
+          <button
+            id="exit-sim-btn"
+            class="btn-header-action btn-exit"
+            aria-label="Exit Simulation"
+            title="Exit
+        Simulation"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"
+              />
+            </svg>
+          </button>
+          <!-- End grouping div -->
+        </header>
+
+        <div class="sim-main-content">
+          <!-- Left/Main Column -->
+          <div class="sim-column-main">
+            <div id="message-display" class="message-display">
+              <!-- Messages added by JS -->
+            </div>
+
+            <div
+              id="decision-point-container"
+              class="decision-point-container hidden"
+            >
+              <h3 id="decision-title">Decision Required</h3>
+              <pre id="decision-summary" class="decision-summary"></pre>
+              <div id="decision-options" class="decision-options"></div>
+              <p class="decision-prompt">Enter your decision:</p>
+            </div>
+            <div
+              id="analyst-briefing-container"
+              class="analyst-briefing-container hidden"
+            >
+              <h3>Prepare Analyst Briefing Points</h3>
+              <p id="analyst-briefing-context"></p>
+              <textarea
+                id="analyst-briefing-input"
+                placeholder="Enter concise points here..."
+              ></textarea>
+              <button id="submit-briefing-button" class="btn btn-secondary">
+                Submit Points for PR Review
+              </button>
+            </div>
+            <div
+              id="yes-no-prompt-container"
+              class="yes-no-prompt-container hidden"
+            >
+              <p id="yes-no-prompt-text">Prompt?</p>
+              <p>Enter 'yes' or 'no':</p>
+            </div>
+
+            <!-- Focus Mode Controls (Initially Hidden) -->
+            <div
+              id="focus-mode-controls"
+              class="hidden"
+              style="text-align: center; padding: 15px"
+            >
+              <button id="defocus-panel-btn" class="btn btn-secondary">
+                Show Messages & Input
+              </button>
+            </div>
+
+            <!-- Player Input Form with Command Helper Button -->
+            <form id="player-input-form" class="player-input-form">
+              <button
+                type="button"
+                id="command-helper-btn"
+                class="btn-command-helper"
+                aria-label="Show Command Helper"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
+                  />
+                </svg>
+              </button>
+
+              <div class="input-prefix">></div>
+              <input
+                type="text"
+                id="player-input"
+                placeholder="Enter command..."
+                autocomplete="off"
+              />
+              <button type="submit" class="btn-send" aria-label="Send Command">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </form>
+
+            <!-- START: HTML FOR WORD COUNT VALIDATION FEEDBACK  -->
+            <div class="input-feedback">
+              <span id="player-input-word-count" class="word-count-display"
+                >0 / 40 words</span
+              >
+              <div id="error-container" class="error-container">
+                <svg
+                  id="input-error-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                  />
+                  <path
+                    d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"
+                  />
+                </svg>
+                <span
+                  id="player-input-error"
+                  class="input-error-message"
+                ></span>
+              </div>
+            </div>
+
+            <div id="command-dropdown" class="command-dropdown hidden">
+              <button class="command-item" data-command="wait">wait</button>
+              <button class="command-item" data-command="decide">decide</button>
+              <button class="command-item" data-command="isolate">
+                isolate [...]
+              </button>
+              <button class="command-item" data-command="block ip">
+                block ip [...]
+              </button>
+            </div>
+          </div>
+          <!-- End sim-column-main -->
+
+          <div
+            id="call-waiting-controls"
+            class="call-waiting-controls hidden"
+          ></div>
+          <!-- End sim-column-main call waiting controls -->
+
+          <!-- Right Column -->
+          <div class="sim-column-side">
+            <!-- System Status Panel -->
+            <div
+              class="status-panel system-status-panel glass-morphism"
+              id="system-status-panel"
+            >
+              <div class="panel-header">
+                <h4>System Status</h4>
+                <div class="panel-header-buttons">
+                  <button
+                    class="btn-panel-focus"
+                    aria-label="Focus System Status Panel"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344-4.344a.5.5 0 0 0 0 .707l4.096 4.096H11.5a.5.5 0 1 0 0 1h3.975a.5.5 0 0 0 .5-.5V7.5a.5.5 0 0 0-1 0v2.768l-4.096-4.096a.5.5 0 0 0-.707 0zM1.025 5.828a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H1.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707zm10.172-.707a.5.5 0 0 0-.707 0L6.404 9.218l-1.06-1.06a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .707 0l4.5-4.5a.5.5 0 0 0 0-.707z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    class="btn-panel-toggle"
+                    aria-label="Toggle System Status Panel"
+                    aria-expanded="true"
+                  >
+                    <span class="toggle-icon">-</span>
+                  </button>
+                </div>
+              </div>
+              <div id="system-status-content" class="panel-content">
+                <ul id="system-status-list"></ul>
+              </div>
+            </div>
+
+            <!-- Agent Status Panel -->
+            <div
+              class="status-panel agent-status-panel glass-morphism"
+              id="agent-status-panel"
+            >
+              <div class="panel-header">
+                <h4>Co-Responders Status</h4>
+                <div class="panel-header-buttons">
+                  <button
+                    class="btn-panel-focus"
+                    aria-label="Focus Co-Responders Status Panel"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344-4.344a.5.5 0 0 0 0 .707l4.096 4.096H11.5a.5.5 0 1 0 0 1h3.975a.5.5 0 0 0 .5-.5V7.5a.5.5 0 0 0-1 0v2.768l-4.096-4.096a.5.5 0 0 0-.707 0zM1.025 5.828a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H1.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707zm10.172-.707a.5.5 0 0 0-.707 0L6.404 9.218l-1.06-1.06a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .707 0l4.5-4.5a.5.5 0 0 0 0-.707z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    class="btn-panel-toggle"
+                    aria-label="Toggle Agent Status Panel"
+                    aria-expanded="true"
+                  >
+                    <span class="toggle-icon">-</span>
+                  </button>
+                </div>
+              </div>
+              <div id="agent-status-content" class="panel-content">
+                <ul id="agent-status-list"></ul>
+                <div
+                  id="missed-calls-section"
+                  class="missed-calls-section hidden"
+                >
+                  <h5>Missed Calls</h5>
+                  <ul id="missed-calls-list"></ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Log Feed Panel -->
+            <div
+              class="status-panel log-feed-panel glass-morphism"
+              id="log-feed-panel"
+            >
+              <div class="panel-header">
+                <h4>Detailed Log Feed</h4>
+                <div class="panel-header-buttons">
+                  <button
+                    class="btn-panel-focus"
+                    aria-label="Focus Log Feed Panel"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344-4.344a.5.5 0 0 0 0 .707l4.096 4.096H11.5a.5.5 0 1 0 0 1h3.975a.5.5 0 0 0 .5-.5V7.5a.5.5 0 0 0-1 0v2.768l-4.096-4.096a.5.5 0 0 0-.707 0zM1.025 5.828a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H1.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707zm10.172-.707a.5.5 0 0 0-.707 0L6.404 9.218l-1.06-1.06a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .707 0l4.5-4.5a.5.5 0 0 0 0-.707z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    class="btn-panel-toggle"
+                    aria-label="Toggle Log Feed Panel"
+                    aria-expanded="true"
+                  >
+                    <span class="toggle-icon">-</span>
+                  </button>
+                </div>
+              </div>
+              <div id="log-feed-content" class="panel-content">
+                <ul id="log-feed-list" class="log-feed-list"></ul>
+              </div>
+            </div>
+          </div>
+          <!-- End sim-column-side -->
+        </div>
+
+        <!-- Debrief Modal (Hidden by default) -->
+        <div id="debrief-modal" class="sim-modal">
+          <div class="sim-modal-inner">
+            <div class="sim-modal-content glass-morphism">
+              <button
+                id="close-debrief-button"
+                class="sim-modal-close"
+                aria-label="Close Debrief"
+              >
+                ×
+              </button>
+              <h2 id="debrief-title">Simulation Debrief</h2>
+              <div id="debrief-summary-points"></div>
+              <div id="debrief-final-status"></div>
+              <div id="debrief-performance-rating">
+                <h4>Performance Analysis</h4>
+                <div id="rating-scores"></div>
+                <p id="rating-feedback"></p>
+                <p id="rating-error" class="error-message"></p>
+              </div>
+            </div>
+            <!-- **** NEW USER FEEDBACK SECTION **** -->
+            <div id="user-feedback-rating" class="user-feedback-section">
+              <h4>Rate Your Simulation Experience</h4>
+              <div
+                class="star-rating-container"
+                role="radiogroup"
+                aria-labelledby="user-feedback-rating-title"
+              >
+                <!-- Stars will be buttons with SVGs -->
+                <button
+                  class="star-btn"
+                  data-rating="1"
+                  aria-label="Rate 1 star"
+                  title="Rate 1 star"
+                >
+                  <!-- SVG Placeholder -->
+                </button>
+                <button
+                  class="star-btn"
+                  data-rating="2"
+                  aria-label="Rate 2 stars"
+                  title="Rate 2 stars"
+                >
+                  <!-- SVG Placeholder -->
+                </button>
+                <button
+                  class="star-btn"
+                  data-rating="3"
+                  aria-label="Rate 3 stars"
+                  title="Rate 3 stars"
+                >
+                  <!-- SVG Placeholder -->
+                </button>
+                <button
+                  class="star-btn"
+                  data-rating="4"
+                  aria-label="Rate 4 stars"
+                  title="Rate 4 stars"
+                >
+                  <!-- SVG Placeholder -->
+                </button>
+                <button
+                  class="star-btn"
+                  data-rating="5"
+                  aria-label="Rate 5 stars"
+                  title="Rate 5 stars"
+                >
+                  <!-- SVG Placeholder -->
+                </button>
+              </div>
+
+              <div
+                id="feedback-input-container"
+                class="feedback-input-container"
+              >
+                <label for="feedback-text" class="feedback-label"
+                  >How can we improve? (Optional)</label
+                >
+                <textarea
+                  id="feedback-text"
+                  class="feedback-textarea"
+                  placeholder="Your feedback helps us make the simulation better..."
+                  rows="3"
+                ></textarea>
+              </div>
+
+              <div class="feedback-submit-area">
+                <button
+                  id="submit-rating-btn"
+                  class="btn btn-secondary"
+                  disabled
+                >
+                  Submit Feedback
+                </button>
+                <p id="rating-submit-status" class="rating-submit-status"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End #simulation-interface -->
+    </div>
+    <div id="iframe-modal" class="sim-modal">
+      <div class="sim-modal-inner">
+        <div class="sim-modal-content iframe-modal-content glass-morphism">
+          <button
+            id="close-iframe-modal"
+            class="sim-modal-close"
+            aria-label="Close Org Chart"
+          >
+            ×
+          </button>
+          <h4 id="iframe-modal-title">Security Org Chart</h4>
+          <div id="iframe-modal-body">
+            <!-- iFrame will be loaded here by JS -->
+            <p>Loading chart...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Templates for JS -->
+    <template id="system-status-item-template">
+      <li class="status-item" data-system-key="">
+        <span class="status-key">System Key</span>
+        <span class="status-value-container">
+          <span class="status-dot"></span>
+          <span class="status-value">UNKNOWN</span>
+        </span>
+      </li>
+    </template>
+    <template id="star-outline-svg">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+      >
+        <path
+          d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.969 2.847a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"
+        />
+      </svg>
+    </template>
+    <template id="star-filled-svg">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+      >
+        <path
+          d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"
+        />
+      </svg>
+    </template>
+    <template id="agent-status-item-template">
+      <li class="status-item agent-item" data-agent-name="">
+        <span class="status-key agent-name">Agent Name</span>
+        <span class="status-value-container agent-status-value">
+          <span class="status-dot"></span>
+          <span class="status-value">available</span>
+        </span>
+        <div class="agent-actions">
+          <span
+            class="agent-thinking-indicator hidden"
+            title="Agent processing..."
+          >
+            🧠
+          </span>
+          <button
+            class="btn btn-agent-action btn-agent-call"
+            title="Call Agent"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z"
+              />
+            </svg>
+          </button>
+          <button
+            class="btn btn-agent-action btn-agent-end-call hidden"
+            title="End Call"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.884.511zM15.854 1.146a.5.5 0 0 1 0 .708L11.707 6l4.147 4.146a.5.5 0 0 1-.708.708L11 6.707l-4.146 4.147a.5.5 0 0 1-.708-.708L10.293 6 6.146 1.854a.5.5 0 1 1 .708-.708L11 5.293l4.146-4.147a.5.5 0 0 1 .708 0"
+              />
+            </svg>
+          </button>
+        </div>
+      </li>
+    </template>
+
+    <template id="log-feed-item-template">
+      <li class="log-entry">
+        <span class="log-time"></span>
+        <span class="log-severity"></span>
+        <span class="log-source"></span>
+        <span class="log-message"></span>
+      </li>
+    </template>
+
+    <template id="message-template">
+      <div class="message">
+        <span class="message-speaker">Speaker:</span>
+        <p class="message-text"></p>
+        <div class="message-notification"></div>
+        <div class="message-actions hidden"></div>
+      </div>
+    </template>
+
+    <!-- Link JS -->
+    <script src="/static/utils.js"></script>
+    <script src="/static/simulation.js"></script>
+    <script src="/static/simulationintro.js"></script>
+  </body>
+</html>

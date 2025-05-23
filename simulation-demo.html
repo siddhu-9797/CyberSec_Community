@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulation UI Demo - Enter The Breach</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>"
+    />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Outfit:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/shepherd.js@10/dist/css/shepherd.css"
+    />
+
+    <!-- Main Simulation CSS -->
+    <link rel="stylesheet" href="/static/css/simulation.css" />
+    <link rel="stylesheet" href="/static/css/simulationshepherd.css" />
+  </head>
+  <body>
+    <!-- Initial Demo Choice Prompt (Starts Visible) -->
+    <div
+      id="initial-prompt-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="initial-prompt-title"
+    >
+      <div class="initial-prompt-content glass-morphism">
+        <h2 id="initial-prompt-title" class="initial-prompt-title">
+          Welcome to the Simulation Demo
+        </h2>
+        <div class="initial-prompt-options">
+          <div class="prompt-option">
+            <button
+              id="start-demo-tutorial-button"
+              class="btn btn-primary"
+              aria-describedby="desc-start-demo"
+            >
+              Start Guided Tutorial
+            </button>
+            <p id="desc-start-demo" class="prompt-description">
+              Recommended for first-time users. We'll walk you through the key
+              UI elements and basic interactions.
+            </p>
+          </div>
+          <div class="prompt-option">
+            <!-- IMPORTANT: Changed id to class -->
+            <button
+              class="btn btn-secondary js-finish-demo-trigger"
+              aria-describedby="desc-skip-demo"
+            >
+              Skip Demo & Start My Simulation
+            </button>
+            <p id="desc-skip-demo" class="prompt-description">
+              Choose this if you're already familiar with the interface or want
+              to jump straight into configuring your own simulation.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button
+      id="close-demo-button"
+      class="btn btn-secondary js-finish-demo-trigger"
+      aria-label="Close Demo and Start My Simulation"
+    >
+      Close Demo
+    </button>
+
+    <div class="simulation-wrapper">
+      <!-- Setup Screen (Starts Hidden) -->
+      <div id="setup-screen" class="setup-screen"></div>
+
+      <!-- Main Simulation Interface (Starts Active, but overlay is on top) -->
+      <div id="simulation-interface" class="simulation-interface active">
+        <header class="sim-header">
+          <div class="sim-title">
+            <span id="sim-scenario-title">Ransomware Demo</span> -
+            <span id="sim-player-info">Michael Liu (CISO)</span>
+          </div>
+          <div class="sim-time-display">
+            <span id="sim-time-clock">--:--:--</span> /
+            <span id="sim-end-time">--:--:--</span> (<span id="sim-intensity"
+              >1.0x</span
+            >
+            Intensity)
+          </div>
+          <div id="sim-status-indicator" class="sim-status running">
+            <span class="status-dot"></span
+            ><span id="sim-status-text">Running</span>
+          </div>
+        </header>
+
+        <div class="sim-main-content">
+          <!-- Left/Main Column -->
+          <div class="sim-column-main">
+            <div id="message-display" class="message-display"></div>
+
+            <!-- Special Interaction Elements (Hidden by default) -->
+            <div
+              id="decision-point-container"
+              class="decision-point-container hidden"
+            >
+              <h3 id="decision-title"></h3>
+              <pre id="decision-summary" class="decision-summary"></pre>
+              <div id="decision-options" class="decision-options"></div>
+              <p class="decision-prompt">
+                Select an option above or type decision.
+              </p>
+            </div>
+            <div
+              id="analyst-briefing-container"
+              class="analyst-briefing-container hidden"
+            >
+              <h3 id="analyst-briefing-title">Prepare Briefing</h3>
+              <!-- Added generic title -->
+              <p id="analyst-briefing-context"></p>
+              <textarea
+                id="analyst-briefing-input"
+                placeholder="Enter points here..."
+              ></textarea>
+              <button id="submit-briefing-button" class="btn btn-secondary">
+                Submit Points
+              </button>
+            </div>
+            <div
+              id="yes-no-prompt-container"
+              class="yes-no-prompt-container hidden"
+            >
+              <p id="yes-no-prompt-text"></p>
+              <p>Enter 'yes' or 'no':</p>
+            </div>
+            <div
+              id="focus-mode-controls"
+              class="hidden"
+              style="text-align: center; padding: 15px"
+            >
+              <button id="defocus-panel-btn" class="btn btn-secondary">
+                Show Messages & Input
+              </button>
+            </div>
+
+            <!-- Player Input Form -->
+            <form id="player-input-form" class="player-input-form">
+              <button
+                type="button"
+                id="command-helper-btn"
+                class="btn-command-helper"
+                aria-label="Show Command Helper"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
+                  />
+                </svg>
+              </button>
+              <div class="input-prefix">></div>
+              <input
+                type="text"
+                id="player-input"
+                placeholder="Enter command..."
+                autocomplete="off"
+              />
+              <button type="submit" class="btn-send" aria-label="Send Command">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </form>
+
+            <!-- Command Dropdown Container -->
+            <div id="command-dropdown" class="command-dropdown hidden">
+              <button class="command-item" data-command="decide">decide</button>
+              <button class="command-item" data-command="isolate">
+                isolate [...]
+              </button>
+              <button class="command-item" data-command="block ip">
+                block ip [...]
+              </button>
+              <button class="command-item" data-command="hang up">
+                hang up
+              </button>
+            </div>
+          </div>
+          <!-- End sim-column-main -->
+
+          <!-- Right Column -->
+          <div class="sim-column-side">
+            <!-- System Status Panel -->
+            <div
+              class="status-panel system-status-panel glass-morphism"
+              id="system-status-panel"
+            >
+              <div class="panel-header">
+                <h4>System Status</h4>
+                <div class="panel-header-buttons">
+                  <button
+                    class="btn-panel-focus"
+                    aria-label="Focus System Status Panel"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344-4.344a.5.5 0 0 0 0 .707l4.096 4.096H11.5a.5.5 0 1 0 0 1h3.975a.5.5 0 0 0 .5-.5V7.5a.5.5 0 0 0-1 0v2.768l-4.096-4.096a.5.5 0 0 0-.707 0zM1.025 5.828a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H1.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707zm10.172-.707a.5.5 0 0 0-.707 0L6.404 9.218l-1.06-1.06a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .707 0l4.5-4.5a.5.5 0 0 0 0-.707z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    class="btn-panel-toggle"
+                    aria-label="Toggle System Status Panel"
+                    aria-expanded="true"
+                  >
+                    <span class="toggle-icon">-</span>
+                  </button>
+                </div>
+              </div>
+              <div id="system-status-content" class="panel-content">
+                <ul id="system-status-list">
+                  <!-- Dynamically Populated -->
+                </ul>
+              </div>
+            </div>
+
+            <!-- Agent Status Panel -->
+            <div
+              class="status-panel agent-status-panel glass-morphism"
+              id="agent-status-panel"
+            >
+              <div class="panel-header">
+                <h4>Co-Responders Status</h4>
+                <div class="panel-header-buttons">
+                  <button
+                    class="btn-panel-focus"
+                    aria-label="Focus Co-Responders Status Panel"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344-4.344a.5.5 0 0 0 0 .707l4.096 4.096H11.5a.5.5 0 1 0 0 1h3.975a.5.5 0 0 0 .5-.5V7.5a.5.5 0 0 0-1 0v2.768l-4.096-4.096a.5.5 0 0 0-.707 0zM1.025 5.828a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H1.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707zm10.172-.707a.5.5 0 0 0-.707 0L6.404 9.218l-1.06-1.06a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .707 0l4.5-4.5a.5.5 0 0 0 0-.707z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    class="btn-panel-toggle"
+                    aria-label="Toggle Agent Status Panel"
+                    aria-expanded="true"
+                  >
+                    <span class="toggle-icon">-</span>
+                  </button>
+                </div>
+              </div>
+              <div id="agent-status-content" class="panel-content">
+                <ul id="agent-status-list"></ul>
+                <div
+                  id="missed-calls-section"
+                  class="missed-calls-section hidden"
+                >
+                  <h5>Missed Calls</h5>
+                  <ul id="missed-calls-list"></ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Log Feed Panel -->
+            <div
+              class="status-panel log-feed-panel glass-morphism"
+              id="log-feed-panel"
+            >
+              <div class="panel-header">
+                <h4>Detailed Log Feed</h4>
+                <div class="panel-header-buttons">
+                  <button
+                    class="btn-panel-focus"
+                    aria-label="Focus Log Feed Panel"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344-4.344a.5.5 0 0 0 0 .707l4.096 4.096H11.5a.5.5 0 1 0 0 1h3.975a.5.5 0 0 0 .5-.5V7.5a.5.5 0 0 0-1 0v2.768l-4.096-4.096a.5.5 0 0 0-.707 0zM1.025 5.828a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H1.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707zm10.172-.707a.5.5 0 0 0-.707 0L6.404 9.218l-1.06-1.06a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .707 0l4.5-4.5a.5.5 0 0 0 0-.707z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    class="btn-panel-toggle"
+                    aria-label="Toggle Log Feed Panel"
+                    aria-expanded="true"
+                  >
+                    <span class="toggle-icon">-</span>
+                  </button>
+                </div>
+              </div>
+              <div id="log-feed-content" class="panel-content">
+                <ul id="log-feed-list" class="log-feed-list">
+                  <!-- Dynamically Populated -->
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End sim-main-content -->
+
+        <!-- Debrief Modal (Hidden by default) -->
+        <div id="debrief-modal" class="sim-modal">
+          <div class="sim-modal-content glass-morphism">
+            <button
+              id="close-debrief-button"
+              class="sim-modal-close"
+              aria-label="Close Debrief"
+            >
+              ×
+            </button>
+            <h3 id="debrief-title" class="sim-modal-title">
+              -- Demo Debrief --
+            </h3>
+
+            <div id="debrief-summary-points" class="debrief-section">
+              <h4>Summary</h4>
+              <ul>
+                <li>Loading debrief...</li>
+              </ul>
+            </div>
+
+            <div id="debrief-final-status" class="debrief-section">
+              <h4>Final System Status</h4>
+              <pre>Loading status...</pre>
+            </div>
+
+            <div id="debrief-performance-rating" class="debrief-section hidden">
+              <!-- Start hidden -->
+              <h4>Performance Rating</h4>
+              <div id="rating-scores" class="rating-scores-container">
+                <!-- Score items will be added here by JS -->
+              </div>
+              <p id="rating-feedback" class="rating-feedback-text">
+                Loading feedback...
+              </p>
+              <p
+                id="rating-error"
+                class="rating-error-text"
+                style="color: var(--color-danger)"
+              ></p>
+            </div>
+          </div>
+          <!-- end sim-modal-content -->
+        </div>
+        <!-- end #debrief-modal -->
+      </div>
+    </div>
+
+    <template id="system-status-item-template">
+      <li class="status-item" data-system-key="">
+        <span class="status-key">System Key</span
+        ><span class="status-value-container"
+          ><span class="status-dot"></span
+          ><span class="status-value">UNKNOWN</span></span
+        >
+      </li>
+    </template>
+    <template id="agent-status-item-template">
+      <li class="status-item agent-item" data-agent-name="">
+        <span class="status-key agent-name">Agent Name</span
+        ><span class="status-value-container agent-status-value"
+          ><span class="status-dot"></span
+          ><span class="status-value">available</span></span
+        >
+        <div class="agent-actions">
+          <span
+            class="agent-thinking-indicator hidden"
+            title="Agent processing..."
+            >🧠</span
+          ><button
+            class="btn btn-agent-action btn-agent-call"
+            title="Call Agent"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z"
+              />
+            </svg></button
+          ><button
+            class="btn btn-agent-action btn-agent-end-call hidden"
+            title="End Call"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.884.511zM15.854 1.146a.5.5 0 0 1 0 .708L11.707 6l4.147 4.146a.5.5 0 0 1-.708.708L11 6.707l-4.146 4.147a.5.5 0 0 1-.708-.708L10.293 6 6.146 1.854a.5.5 0 1 1 .708-.708L11 5.293l4.146-4.147a.5.5 0 0 1 .708 0"
+              />
+            </svg>
+          </button>
+        </div>
+      </li>
+    </template>
+    <template id="log-feed-item-template">
+      <li class="log-entry">
+        <span class="log-time"></span><span class="log-severity"></span
+        ><span class="log-source"></span><span class="log-message"></span>
+      </li>
+    </template>
+    <template id="message-template">
+      <div class="message">
+        <span class="message-speaker">Speaker:</span>
+        <p class="message-text"></p>
+        <div class="message-notification"></div>
+        <div class="message-actions hidden"></div>
+      </div>
+    </template>
+
+    <!-- Status Message Div -->
+    <div
+      id="demo-status-message"
+      style="
+        color: white;
+        margin-top: 10px;
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        z-index: 10;
+      "
+    ></div>
+
+    <script src="/static/utils.js"></script>
+    <script src="/static/handle-demo-finish.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10/dist/js/shepherd.min.js"></script>
+    <script src="/static/simulation_demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  </body>
+</html>

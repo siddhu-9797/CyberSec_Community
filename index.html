@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Cybersecurity Simulation: CISO Incident Response | Enter The Breach</title>
+
+    <!-- <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>"
+    /> -->
+    <link rel="icon" href="static/images/haktopus_favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/LOGO.png">
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"
+      defer
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"
+      defer
+    ></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Outfit:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="static/css/style.css" />
+    <script src="static/script.js" defer></script>
+    <script type="text/javascript">
+      (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "rc6mnl7m9k");
+  </script>
+    <meta name="description" content="Experience realistic cybersecurity crisis scenarios like Ransomware, DDoS, and Data Breaches as a CISO. Test your incident response skills in the Enter The Breach simulation. Configure intensity and duration.">
+  </head>
+  <body>
+        <!-- Mobile Screen Warning -->
+        <div class="mobile-warning" id="mobileWarning" role="alert" aria-live="assertive" style="display: none;">
+          <p>
+              For the optimal simulation experience, we recommend using a larger screen (tablet landscape or desktop). Some UI elements may appear condensed on smaller devices.
+          </p>
+          <button class="mobile-warning-close" aria-label="Dismiss warning">×</button>
+      </div>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+      <div class="preloader-icon">
+        <svg width="80" height="80" viewBox="0 0 100 100">
+          <path
+            class="preloader-path path1"
+            d="M 50 50 m -40 0 a 40 40 0 1 0 80 0 a 40 40 0 1 0 -80 0"
+            stroke="#09eef5"
+            stroke-width="4"
+            fill="none"
+          ></path>
+          <path
+            class="preloader-path path2"
+            d="M 50 50 m -30 0 a 30 30 0 1 0 60 0 a 30 30 0 1 0 -60 0"
+            stroke="#03fc84"
+            stroke-width="4"
+            fill="none"
+          ></path>
+          <text
+            x="50"
+            y="55"
+            text-anchor="middle"
+            fill="#f0f8ff"
+            font-size="12"
+            font-family="'JetBrains Mono', monospace"
+          >
+            LOADING
+          </text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="site-header" id="site-header">
+      <div class="container header-container">
+        <a href="#" class="logo">
+          <svg width="30" height="30" ...>...</svg>
+          <span>HAKTOPUS</span>
+        </a>
+        <nav class="main-nav" id="main-nav">
+          <a href="#simulator-core">Features</a>
+
+        </nav>
+        
+
+        <button class="mobile-nav-toggle" id="mobile-nav-toggle" ...>
+          ...
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-background" id="heroBackground"></div>
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+          <h1 class="hero-title" id="heroTitle">ENTER THE BREACH</h1>
+          <p class="hero-subtitle reveal-hero">
+            Forge resilience. Master cyber crisis response in hyper-realistic,
+            AI-driven simulations.
+          </p>
+          <div class="hero-cta-container reveal-hero">
+            <button class="btn btn-primary btn-launch" id="heroLaunchBtn">
+              <span>Launch Simulation</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+            <a href="#simulator-core" class="btn btn-secondary btn-explore"
+              >Explore Scenarios</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Threat Landscape Section -->
+      <section class="threat-landscape section-padding">
+        <div class="container">
+          <div class="section-heading centered">
+            <span class="section-tag">The Reality</span>
+            <h2 class="section-title">
+              Cyber Threats Are Evolving. Is Your Response?
+            </h2>
+            <p class="section-subtitle">
+              Static playbooks aren't enough. Teams need live-fire exercises to
+              build muscle memory against sophisticated attacks.
+            </p>
+          </div>
+          <div class="threat-stats-grid">
+            <div class="stat-item reveal-up">
+              <div class="stat-value">
+                <span class="counter" data-target="210" data-format="int"
+                  >0</span
+                >
+                Days
+              </div>
+              <div class="stat-label">Avg. Time to Identify a Breach</div>
+            </div>
+            <div class="stat-item reveal-up" style="--reveal-delay: 0.1s">
+              <div class="stat-value">
+                $<span class="counter" data-target="4.35" data-format="float:2"
+                  >0.00</span
+                >M+
+              </div>
+              <div class="stat-label">Avg. Cost of a Data Breach</div>
+            </div>
+            <div class="stat-item reveal-up" style="--reveal-delay: 0.2s">
+              <div class="stat-value">
+                <span class="counter" data-target="75" data-format="int">0</span
+                >%
+              </div>
+              <div class="stat-label">Report Insufficient IR Training</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Simulator Core Section -->
+      <section class="simulator-core section-padding" id="simulator-core">
+        <div class="container-large">
+          <div class="section-heading centered">
+            <span class="section-tag">The Proving Ground</span>
+            <h2 class="section-title">Experience the Pressure Chamber</h2>
+          </div>
+          <div class="simulator-layout">
+            <!-- Scenario Selector -->
+            <div class="scenario-selector reveal-left">
+              <h3 class="selector-title">Choose Your Challenge</h3>
+              <div class="scenario-tabs" id="scenarioTabs">
+                <button class="scenario-tab active" data-scenario="ransomware">
+                  Ransomware
+                </button>
+                <button class="scenario-tab" data-scenario="ddos">
+                  DDoS Attack
+                </button>
+                <button class="scenario-tab" data-scenario="breach">
+                  Data Breach
+                </button>
+                <button class="scenario-tab" data-scenario="insider">
+                  Insider Threat
+                </button>
+              </div>
+              <div class="scenario-details" id="scenarioDetailsContainer">
+                <div class="scenario-detail active" id="scenario-ransomware">
+                  <h4>Ransomware Crisis</h4>
+                  <p>
+                    Critical systems encrypted. Negotiate, contain, recover
+                    under intense stakeholder pressure.
+                  </p>
+                  <div class="scenario-meta">
+                    <span
+                      ><strong>Difficulty:</strong>
+                      <span class="difficulty-level high">High</span></span
+                    >
+                    <span><strong>Focus:</strong> Containment, Recovery</span>
+                  </div>
+                  <button
+                    class="btn btn-tertiary btn-view-details"
+                    data-modal-target="modal-ransomware"
+                  >
+                    View Objectives
+                  </button>
+                </div>
+                <div class="scenario-detail" id="scenario-ddos">
+                  <h4>DDoS Overload</h4>
+                  <p>
+                    Services overwhelmed by malicious traffic. Mitigate,
+                    identify source, maintain availability.
+                  </p>
+                  <div class="scenario-meta">
+                    <span
+                      ><strong>Difficulty:</strong>
+                      <span class="difficulty-level medium">Medium</span></span
+                    >
+                    <span
+                      ><strong>Focus:</strong> Mitigation, Traffic
+                      Analysis</span
+                    >
+                  </div>
+                  <button
+                    class="btn btn-tertiary btn-view-details"
+                    data-modal-target="modal-ddos"
+                  >
+                    View Objectives
+                  </button>
+                </div>
+                <div class="scenario-detail" id="scenario-breach">
+                  <h4>Critical Data Breach</h4>
+                  <p>
+                    Sensitive data exfiltrated. Manage response, compliance,
+                    forensics, and communication.
+                  </p>
+                  <div class="scenario-meta">
+                    <span
+                      ><strong>Difficulty:</strong>
+                      <span class="difficulty-level high">High</span></span
+                    >
+                    <span><strong>Focus:</strong> Forensics, Compliance</span>
+                  </div>
+                  <button
+                    class="btn btn-tertiary btn-view-details"
+                    data-modal-target="modal-breach"
+                  >
+                    View Objectives
+                  </button>
+                </div>
+                <div class="scenario-detail" id="scenario-insider">
+                  <h4>Insider Threat</h4>
+                  <p>
+                    Malicious activity detected from within. Identify the
+                    source, assess damage, manage internal fallout.
+                  </p>
+                  <div class="scenario-meta">
+                    <span
+                      ><strong>Difficulty:</strong>
+                      <span class="difficulty-level medium">Medium</span></span
+                    >
+                    <span
+                      ><strong>Focus:</strong> Investigation, HR Protocol</span
+                    >
+                  </div>
+                  <button
+                    class="btn btn-tertiary btn-view-details"
+                    data-modal-target="modal-insider"
+                  >
+                    View Objectives
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Live Feed Dashboard -->
+            <div class="live-feed-dashboard glass-morphism reveal-right">
+              <div class="dashboard-header">
+                <h4>Live Simulation Feed</h4>
+                <div class="status-indicator live">
+                  <span class="status-dot"></span> Live
+                </div>
+              </div>
+              <div class="dashboard-content">
+                <div class="log-feed-container">
+                  <ul class="log-feed" id="logFeed">
+                    <!-- Logs added by JS -->
+                    <li>
+                      <span class="log-timestamp">[00:00:01]</span>
+                      <span class="log-source log-system">SimEngine:</span>
+                      Simulation Initialized: Ransomware Scenario (High
+                      Difficulty).
+                    </li>
+                  </ul>
+                </div>
+                <div class="mini-stats">
+                  <div class="stat-block">
+                    <span class="stat-label">Network Traffic</span>
+                    <div class="stat-value traffic-normal" id="networkStatus">
+                      Normal
+                    </div>
+                  </div>
+                  <div class="stat-block">
+                    <span class="stat-label">System Alerts</span>
+                    <div class="stat-value alert-low" id="alertLevel">
+                      Low (<span id="alertCount">0</span>)
+                    </div>
+                  </div>
+                  <div class="stat-block">
+                    <span class="stat-label">Team Stress</span>
+                    <div class="stat-value stress-low" id="stressLevel">
+                      Calm
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="dashboard-footer">
+                <span>Scenario Time: <span id="simTime">00:00:00</span></span>
+                <span
+                  >Decision Points: <span id="decisionPoints">0 / 5</span></span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+    <!-- Scenario Modals -->
+    <div class="modal" id="modal-ransomware">
+      <div class="modal-inner">
+        <div class="modal-content glass-morphism">
+          <button class="modal-close" aria-label="Close Modal">×</button>
+          <h3>Ransomware Crisis: Objectives</h3>
+          <ul>
+            <li>Identify initial infection vector.</li>
+            <li>Contain spread across network segments.</li>
+            <li>Analyze ransomware variant & capabilities.</li>
+            <li>Evaluate backup integrity and recovery options.</li>
+            <li>Simulate communication with stakeholders/executives.</li>
+            <li>(Optional) Engage in mock negotiation tactics.</li>
+            <li>Execute recovery plan and verify system integrity.</li>
+          </ul>
+          <button class="btn btn-primary modal-launch-btn">
+            Launch This Scenario
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="modal" id="modal-ddos">
+      <div class="modal-inner">
+        <div class="modal-content glass-morphism">
+          <button class="modal-close" aria-label="Close Modal">×</button>
+          <h3>DDoS Overload: Objectives</h3>
+          <ul>
+            <li>
+              Detect and classify DDoS attack type (volumetric,
+              application-layer, etc.).
+            </li>
+            <li>
+              Implement appropriate mitigation strategies (rate limiting, IP
+              filtering, CDN/WAF config).
+            </li>
+            <li>
+              Analyze traffic patterns to identify source IPs/networks or
+              botnets.
+            </li>
+            <li>
+              Monitor critical service availability and performance impacts.
+            </li>
+            <li>Communicate status updates to relevant internal teams.</li>
+            <li>Adjust mitigation as attack evolves.</li>
+          </ul>
+          <button class="btn btn-primary modal-launch-btn">
+            Launch This Scenario
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="modal" id="modal-breach">
+      <div class="modal-inner">
+        <div class="modal-content glass-morphism">
+          <button class="modal-close" aria-label="Close Modal">×</button>
+          <h3>Critical Data Breach: Objectives</h3>
+          <ul>
+            <li>
+              Confirm breach occurrence and scope the extent of data exposure.
+            </li>
+            <li>
+              Identify compromised systems and attacker's point of
+              entry/persistence.
+            </li>
+            <li>Contain the breach to prevent further data loss.</li>
+            <li>Preserve evidence for forensic analysis.</li>
+            <li>
+              Assess regulatory and legal notification requirements (GDPR, CCPA,
+              etc.).
+            </li>
+            <li>Develop internal and external communication plans.</li>
+            <li>Coordinate with legal, PR, and executive teams.</li>
+            <li>
+              Eradicate attacker presence and restore affected systems securely.
+            </li>
+          </ul>
+          <button class="btn btn-primary modal-launch-btn">
+            Launch This Scenario
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="modal" id="modal-insider">
+      <div class="modal-inner">
+        <div class="modal-content glass-morphism">
+          <button class="modal-close" aria-label="Close Modal">×</button>
+          <h3>Insider Threat: Objectives</h3>
+          <ul>
+            <li>
+              Investigate suspicious activity flagged by monitoring tools (UEBA,
+              DLP).
+            </li>
+            <li>
+              Correlate logs and access patterns to identify potential insider.
+            </li>
+            <li>
+              Discreetly gather evidence while minimizing operational
+              disruption.
+            </li>
+            <li>
+              Assess the scope and intent of the insider's actions (malicious
+              vs. accidental).
+            </li>
+            <li>
+              Coordinate with HR, Legal, and Management on appropriate response.
+            </li>
+            <li>Revoke access and secure affected data/systems.</li>
+            <li>Conduct post-incident review to improve internal controls.</li>
+          </ul>
+          <button class="btn btn-primary modal-launch-btn">
+            Launch This Scenario
+          </button>
+        </div>
+      </div>
+    </div>
+<footer class="site-footer-bottom section-padding" style="padding-top: 35px; padding-bottom: 35px;"> <!-- Adjust padding as needed -->
+  <div class="container footer-bottom-container">
+    <div class="footer-links">
+      <a href="/privacy-policy">Privacy Policy</a><!-- Example Link -->
+      <a href="/terms-of-service">Terms of Service</a> <!-- Example Link -->
+      <a href="/contact">Contact Us</a> <!-- Example Link -->
+    </div>
+    <div class="footer-copyright">
+      © <span id="currentYear"></span> HAKTOPUS. All Rights Reserved.
+    </div>
+  </div>
+</footer>
+ 
+    <script src="/static/index.js"></script>
+<script>
+  document.getElementById('currentYear').textContent = new Date().getFullYear();
+</script>
+  </body>
+</html>

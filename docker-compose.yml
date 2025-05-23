@@ -1,0 +1,93 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: sim-redis
+    ports: # Keep port mapping for potential host access/debugging
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks: # Assign redis to the networkx
+      - sim_network
+
+  # Add PostgreSQL service if you want to run it in Docker too
+  # Make sure environment variables match your .env file
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: sim-postgres
+  #   environment:
+  #     POSTGRES_DB: ${POSTGRES_DB} # Reads from .env if using Docker Compose v1.27+
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sim-api
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./app:/app/app
+      - ./workers:/app/workers
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on: # API depends on redis (and postgres if used)
+      - redis
+      # - postgres
+    networks: # Assign api to the network
+      - sim_network
+
+  worker:
+    build: # Uses the same build context and Dockerfile as api
+      context: .
+      dockerfile: Dockerfile
+    container_name: sim-worker
+    # Command to run the RQ worker, connecting to the 'redis' service name
+    command: rq worker default --url redis://redis:6379/0
+    volumes: # Mount code same as api if worker needs to import app code directly
+      - ./app:/app/app
+      - ./workers:/app/workers
+    env_file: # Load same environment variables
+      - .env
+    depends_on: # Worker depends on redis
+      - redis
+    networks: # Assign worker to the network
+      - sim_network
+    # Add restart policy for production later (e.g., restart: unless-stopped)
+  # --- END NEW WORKER SERVICE ---
+
+  # --- NEW RQ SCHEDULER SERVICE ---
+  scheduler:
+    build: # Uses the same image as api/worker
+      context: .
+      dockerfile: Dockerfile
+    container_name: sim-scheduler
+    # Command to run the rq-scheduler process
+    # Connects to the 'redis' service name
+    command: rqscheduler --url redis://redis:6379/0 --interval 5
+    volumes: # Mount code if scheduler needs direct imports (less likely, but safe)
+      - ./app:/app/app
+      - ./workers:/app/workers
+    env_file: # Load same environment variables (might not need all, but safe)
+      - .env
+    depends_on: # Depends on redis being available
+      - redis
+    networks: # Assign scheduler to the network
+      - sim_network
+    # restart: unless-stopped # Good for production later
+  # --- END RQ SCHEDULER SERVICE ---
+
+volumes:
+  redis_data:
+  # postgres_data:
+
+networks: # Define the custom network
+  sim_network:
+    driver: bridge

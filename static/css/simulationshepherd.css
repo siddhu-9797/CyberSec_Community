@@ -1,0 +1,270 @@
+.shepherd-element {
+  background-color: #2e3654; /* Slightly brighter background */
+  border: 1px solid #5c6a8a; /* Lighter border */
+  border-radius: 8px; /* Slightly more rounded corners */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), 0 0 15px rgba(88, 130, 255, 0.15); /* Enhanced glow */
+  max-width: 400px;
+  z-index: 9999;
+}
+
+.shepherd-header {
+  background-color: #3d4671; /* Brighter header */
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #5c6a8a;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.shepherd-title {
+  color: #f0f0ff; /* Brighter text */
+  font-weight: bold;
+  font-size: 1.1em;
+  margin: 0;
+}
+
+.shepherd-cancel-icon {
+  color: #b8c0d8; /* Brighter icon */
+  transition: color 0.2s ease, transform 0.2s ease;
+  font-size: 1.5em;
+  line-height: 1;
+}
+
+.shepherd-cancel-icon:hover {
+  color: #ffffff;
+  transform: scale(1.1); /* Slight scale effect on hover */
+}
+
+.shepherd-text {
+  color: #d5daec; /* Brighter text */
+  padding: 1rem;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+
+.shepherd-text p {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.shepherd-text p:last-child {
+  margin-bottom: 0;
+}
+
+.shepherd-text code {
+  background-color: #454d6d; /* Slightly brighter */
+  color: #b8ff4d; /* Brighter code text */
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.9em;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+}
+
+.shepherd-footer {
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #5c6a8a;
+  background-color: #3d4671; /* Match header */
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.shepherd-button {
+  background-color: #5975b3; /* Brighter button */
+  color: #ffffff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.shepherd-button:not(:disabled):hover {
+  background-color: #6d8ad4; /* Brighter on hover */
+  transform: translateY(-1px);
+}
+
+.shepherd-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.shepherd-button.shepherd-button-secondary {
+  background-color: transparent;
+  color: #b8c0d8; /* Brighter text */
+  box-shadow: none;
+  border: 1px solid #5c6a8a;
+}
+
+.shepherd-button.shepherd-button-secondary:not(:disabled):hover {
+  background-color: rgba(92, 106, 138, 0.3); /* Semi-transparent hover */
+  color: #ffffff;
+}
+
+.shepherd-arrow::before {
+  background: #2e3654; /* Match main background */
+  border: 1px solid #5c6a8a;
+}
+
+.shepherd-element[data-popper-placement^="bottom"] > .shepherd-arrow::before {
+  background: #3d4671; /* Match header */
+}
+
+/* --- Enhanced Close Demo Button --- */
+#close-demo-button {
+  position: fixed;
+  top: 80px; /* Moved higher on the page */
+  right: 20px;
+  z-index: 150;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-out, visibility 0s linear 0.3s,
+    transform 0.3s ease;
+  pointer-events: none;
+
+  /* Remove border and background */
+  background-color: transparent !important;
+  border: none !important;
+
+  /* Text styling */
+  color: rgba(255, 100, 100, 0.9) !important; /* Red color */
+  font-weight: 600; /* Slightly bolder */
+  padding: 0.5rem 1rem;
+  height: 40px; /* Explicit height setting */
+  font-size: 1rem; /* Control font size */
+  line-height: 1; /* Control line height */
+
+  /* Red neon effect */
+  text-shadow: 0 0 5px rgba(255, 100, 100, 0.5),
+    0 0 10px rgba(255, 100, 100, 0.3);
+  box-shadow: none !important;
+
+  /* Center text vertically */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#close-demo-button.visible {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s, 0s;
+  pointer-events: auto;
+}
+
+#close-demo-button:hover {
+  transform: scale(1.05);
+  color: rgba(255, 150, 150, 1) !important; /* Lighter red on hover */
+  text-shadow: 0 0 7px rgba(255, 100, 100, 0.7),
+    0 0 15px rgba(255, 100, 100, 0.5), 0 0 25px rgba(255, 100, 100, 0.3);
+}
+
+/* Optional: Add a subtle animated glow effect to draw attention */
+@keyframes closeButtonGlow {
+  0%,
+  100% {
+    text-shadow: 0 0 5px rgba(255, 100, 100, 0.5),
+      0 0 10px rgba(255, 100, 100, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 8px rgba(255, 100, 100, 0.7),
+      0 0 15px rgba(255, 100, 100, 0.5);
+  }
+}
+
+#close-demo-button.visible {
+  animation: closeButtonGlow 2s infinite ease-in-out;
+}
+
+#initial-prompt-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(4, 8, 15, 0.85); /* Slightly darker overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000; /* Above simulation UI, below Shepherd */
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s ease-out, visibility 0s linear 0s;
+}
+#initial-prompt-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease-out, visibility 0s linear 0.4s; /* Delay hiding */
+  pointer-events: none;
+}
+.initial-prompt-content {
+  padding: 35px 45px;
+  width: 90%;
+  max-width: 600px;
+  text-align: center;
+  /* Uses .glass-morphism class added via HTML */
+  transform: scale(1);
+  transition: transform 0.4s ease-out;
+}
+#initial-prompt-overlay.hidden .initial-prompt-content {
+  transform: scale(0.95);
+}
+.initial-prompt-title {
+  font-size: 1.7rem;
+  color: var(--text-primary);
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+.initial-prompt-options {
+  display: flex;
+  flex-direction: column; /* Stack options vertically */
+  gap: 30px; /* Increase gap between options */
+  align-items: center;
+}
+.prompt-option {
+  width: 100%;
+  max-width: 350px; /* Limit width of option buttons */
+}
+.prompt-option .btn {
+  width: 100%; /* Make buttons fill container */
+  margin-bottom: 10px; /* Space between button and description */
+}
+.prompt-description {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.thinking-animation {
+  /* Add your pulse/fade animation here if needed */
+  /* Example: */
+  opacity: 0.7;
+  animation: thinkingPulse 1.5s infinite ease-in-out;
+}
+@keyframes thinkingPulse {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.agent-thinking-indicator {
+  /* Example: */
+  display: inline-block; /* Needed for transform */
+  animation: thinkingPulseDot 1.5s infinite ease-in-out;
+}
+@keyframes thinkingPulseDot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}

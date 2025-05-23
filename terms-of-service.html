@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terms of Service | Enter The Breach</title>
+
+    <!-- Favicons (using your existing paths, assuming /static/ is correct root for static files) -->
+    <link rel="icon" href="/static/images/haktopus_favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" href="/static/images/LOGO.png" />
+
+    <!-- Fonts (from your main page) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Outfit:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Main Stylesheet (from your main page) -->
+    <link rel="stylesheet" href="/static/css/style.css" />
+
+    <!-- Specific styles for legal pages (copied from privacy-policy.html for consistency) -->
+    <style>
+      .legal-content-wrapper {
+        background-color: var(--dark-surface); /* Or var(--dark-bg) */
+        color: var(--text-secondary);
+      }
+      .legal-content-wrapper .container {
+        max-width: 800px; /* Or your preferred content width */
+        padding-top: 50px; /* Adjust as needed */
+        padding-bottom: 50px; /* Adjust as needed */
+      }
+      .legal-content-wrapper h1 {
+        color: var(--text-primary);
+        font-size: clamp(2rem, 4vw, 2.8rem); /* Consistent with your h2 */
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      .legal-content-wrapper h2 {
+        color: var(--neon-cyan); /* Highlight section titles */
+        font-size: clamp(1.5rem, 3vw, 2rem); /* Consistent with your h3 */
+        margin-top: 30px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid var(--glass-border);
+        padding-bottom: 10px;
+      }
+      .legal-content-wrapper h3 {
+        color: var(--text-primary);
+        font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+        margin-top: 25px;
+        margin-bottom: 10px;
+      }
+      .legal-content-wrapper p,
+      .legal-content-wrapper li {
+        line-height: 1.8;
+        margin-bottom: 1em;
+        color: var(--text-secondary);
+      }
+      .legal-content-wrapper strong {
+        color: var(--text-primary);
+      }
+      .legal-content-wrapper a {
+        color: var(--neon-green); /* Or var(--neon-cyan) */
+      }
+      .legal-content-wrapper a:hover {
+        text-decoration: underline;
+      }
+      .legal-content-wrapper ul {
+        list-style: disc;
+        padding-left: 25px;
+        margin-bottom: 1.5em;
+      }
+      .last-updated {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: var(--text-tertiary);
+      }
+      .legal-notice {
+        background-color: rgba(255, 204, 0, 0.1); /* Subtle warning yellow */
+        border: 1px solid var(--warning-yellow);
+        color: var(--warning-yellow);
+        padding: 15px;
+        margin-top: 40px;
+        border-radius: 8px;
+        text-align: center;
+      }
+      .legal-notice strong {
+        color: var(--warning-yellow);
+      }
+    </style>
+    <script src="/static/script.js" defer></script>
+  </head>
+  <body>
+    <!-- Header (Copied from your main page, ensure logo SVG is complete) -->
+    <header class="site-header" id="site-header">
+      <div class="container header-container">
+        <a href="/" class="logo">
+          <!-- Link back to homepage -->
+          <!-- Replace ... with your actual SVG logo code -->
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 100 100"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M50 10 C 20 10, 10 30, 10 50 C 10 70, 20 90, 50 90 C 80 90, 90 70, 90 50 C 90 30, 80 10, 50 10 Z M 50 20 C 72 20, 80 35, 80 50 C 80 65, 72 80, 50 80 C 28 80, 20 65, 20 50 C 20 35, 28 20, 50 20 Z M45 40 L45 60 L55 50 Z"
+            />
+            <!-- Example Placeholder SVG -->
+          </svg>
+          <span>HAKTOPUS</span>
+        </a>
+        <nav class="main-nav" id="main-nav">
+          <!-- You might want a simplified nav or just a link back to the main site -->
+          <a href="/">Back to Simulation</a>
+        </nav>
+        <button
+          class="mobile-nav-toggle"
+          id="mobile-nav-toggle"
+          aria-label="Toggle navigation"
+          aria-expanded="false"
+          aria-controls="main-nav"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="legal-content-wrapper section-padding">
+        <div class="container">
+          <h1>Terms of Service for Enter The Breach</h1>
+          <p class="last-updated">Last Updated: April 26, 2025</p>
+          <!-- CHANGE THIS DATE -->
+
+          <p>
+            Welcome to Enter The Breach (the "Simulation", "Platform",
+            "Service"), a cybersecurity simulation platform provided by HAKTOPUS
+            ("Company", "we", "us", or "our"). These Terms of Service ("Terms")
+            govern your access to and use of our Platform and any related
+            services.
+          </p>
+          <p>
+            By accessing or using our Service, you agree to be bound by these
+            Terms and our Privacy Policy. If you do not agree to these Terms, do
+            not use the Service.
+          </p>
+
+          <h2>1. Description of Service</h2>
+          <p>
+            Enter The Breach is an interactive simulation platform designed to
+            provide users with experience in cybersecurity incident response.
+            The Platform allows users to engage in various simulated scenarios,
+            make decisions, and observe outcomes based on those decisions. The
+            Service is intended for educational and skill-development purposes.
+          </p>
+
+          <h2>2. Eligibility and Account Registration (If Applicable)</h2>
+          <!-- If you don't have accounts, you can remove or significantly modify this section -->
+          <p>
+            To access certain features of the Service, you may be required to
+            register for an account. If you register for an account, you agree
+            to: (a) provide accurate, current, and complete information as may
+            be prompted by any registration forms on the Service ("Registration
+            Data"); (b) maintain the security of your password; (c) maintain and
+            promptly update the Registration Data, and any other information you
+            provide to us, to keep it accurate, current, and complete; and (d)
+            accept all risks of unauthorized access to the Registration Data and
+            any other information you provide to us.
+          </p>
+          <p>
+            You are responsible for all activities that occur under your
+            account. You agree to notify us immediately of any unauthorized use
+            of your account.
+          </p>
+          <p>
+            The Service is not intended for individuals under the age of 13 (or
+            16 in some jurisdictions). By using the Service, you represent and
+            warrant that you meet the applicable age requirement.
+          </p>
+
+          <h2>3. User Conduct and Responsibilities</h2>
+          <p>
+            You agree to use the Service only for lawful purposes and in
+            accordance with these Terms. You agree not to:
+          </p>
+          <ul>
+            <li>
+              Use the Service in any way that violates any applicable federal,
+              state, local, or international law or regulation.
+            </li>
+            <li>
+              Attempt to gain unauthorized access to, interfere with, damage, or
+              disrupt any parts of the Service, the server on which the Service
+              is stored, or any server, computer, or database connected to the
+              Service.
+            </li>
+            <li>
+              Use any robot, spider, or other automatic device, process, or
+              means to access the Service for any purpose, including monitoring
+              or copying any of the material on the Service.
+            </li>
+            <li>
+              Introduce any viruses, trojan horses, worms, logic bombs, or other
+              material that is malicious or technologically harmful.
+            </li>
+            <li>
+              Engage in any other conduct that restricts or inhibits anyone's
+              use or enjoyment of the Service, or which, as determined by us,
+              may harm the Company or users of the Service or expose them to
+              liability.
+            </li>
+            <li>
+              Attempt to decompile, reverse engineer, disassemble, or otherwise
+              reduce the Service to a human-perceivable form.
+            </li>
+            <li>
+              Use the Service for any commercial purpose not expressly
+              authorized by us in writing.
+            </li>
+          </ul>
+
+          <h2>4. Intellectual Property Rights</h2>
+          <p>
+            The Service and its entire contents, features, and functionality
+            (including but not limited to all information, software, text,
+            displays, images, video, and audio, and the design, selection, and
+            arrangement thereof) are owned by the Company, its licensors, or
+            other providers of such material and are protected by United States
+            and international copyright, trademark, patent, trade secret, and
+            other intellectual property or proprietary rights laws.
+          </p>
+          <p>
+            These Terms permit you to use the Service for your personal,
+            non-commercial educational use only. You must not reproduce,
+            distribute, modify, create derivative works of, publicly display,
+            publicly perform, republish, download, store, or transmit any of the
+            material on our Service, except as follows:
+          </p>
+          <ul>
+            <li>
+              Your computer may temporarily store copies of such materials in
+              RAM incidental to your accessing and viewing those materials.
+            </li>
+            <li>
+              You may store files that are automatically cached by your Web
+              browser for display enhancement purposes.
+            </li>
+          </ul>
+          <p>
+            If you print, copy, modify, download, or otherwise use or provide
+            any other person with access to any part of the Service in breach of
+            the Terms, your right to use the Service will stop immediately and
+            you must, at our option, return or destroy any copies of the
+            materials you have made.
+          </p>
+          <p>
+            The HAKTOPUS and Enter The Breach names, logos, and all related
+            names, logos, product and service names, designs, and slogans are
+            trademarks of the Company or its affiliates or licensors. You must
+            not use such marks without the prior written permission of the
+            Company.
+          </p>
+
+          <h2>5. Simulation Content and Educational Purpose</h2>
+          <p>
+            The scenarios, data, and information presented within the Simulation
+            are for educational and training purposes only. They are designed to
+            be realistic but are fictional. Any resemblance to actual events,
+            entities, or persons is coincidental.
+          </p>
+          <p>
+            The Simulation does not provide professional cybersecurity advice or
+            services. Decisions made and outcomes experienced within the
+            Simulation should not be taken as definitive guidance for real-world
+            incident response without further professional consultation and
+            consideration of specific real-world contexts.
+          </p>
+
+          <h2>6. Disclaimers of Warranties</h2>
+          <p>
+            THE SERVICE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS,
+            WITHOUT ANY WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+            NEITHER THE COMPANY NOR ANY PERSON ASSOCIATED WITH THE COMPANY MAKES
+            ANY WARRANTY OR REPRESENTATION WITH RESPECT TO THE COMPLETENESS,
+            SECURITY, RELIABILITY, QUALITY, ACCURACY, OR AVAILABILITY OF THE
+            SERVICE.
+          </p>
+          <p>
+            WITHOUT LIMITING THE FOREGOING, NEITHER THE COMPANY NOR ANYONE
+            ASSOCIATED WITH THE COMPANY REPRESENTS OR WARRANTS THAT THE SERVICE,
+            ITS CONTENT, OR ANY SERVICES OR ITEMS OBTAINED THROUGH THE SERVICE
+            WILL BE ACCURATE, RELIABLE, ERROR-FREE, OR UNINTERRUPTED, THAT
+            DEFECTS WILL BE CORRECTED, THAT OUR SITE OR THE SERVER THAT MAKES IT
+            AVAILABLE ARE FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS, OR THAT
+            THE SERVICE OR ANY SERVICES OR ITEMS OBTAINED THROUGH THE SERVICE
+            WILL OTHERWISE MEET YOUR NEEDS OR EXPECTATIONS.
+          </p>
+          <p>
+            TO THE FULLEST EXTENT PROVIDED BY LAW, THE COMPANY HEREBY DISCLAIMS
+            ALL WARRANTIES OF ANY KIND, WHETHER EXPRESS OR IMPLIED, STATUTORY,
+            OR OTHERWISE, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+            MERCHANTABILITY, NON-INFRINGEMENT, AND FITNESS FOR PARTICULAR
+            PURPOSE.
+          </p>
+
+          <h2>7. Limitation on Liability</h2>
+          <p>
+            TO THE FULLEST EXTENT PROVIDED BY LAW, IN NO EVENT WILL THE COMPANY,
+            ITS AFFILIATES, OR THEIR LICENSORS, SERVICE PROVIDERS, EMPLOYEES,
+            AGENTS, OFFICERS, OR DIRECTORS BE LIABLE FOR DAMAGES OF ANY KIND,
+            UNDER ANY LEGAL THEORY, ARISING OUT OF OR IN CONNECTION WITH YOUR
+            USE, OR INABILITY TO USE, THE SERVICE, ANY WEBSITES LINKED TO IT,
+            ANY CONTENT ON THE SERVICE OR SUCH OTHER WEBSITES, INCLUDING ANY
+            DIRECT, INDIRECT, SPECIAL, INCIDENTAL, CONSEQUENTIAL, OR PUNITIVE
+            DAMAGES, INCLUDING BUT NOT LIMITED TO, PERSONAL INJURY, PAIN AND
+            SUFFERING, EMOTIONAL DISTRESS, LOSS OF REVENUE, LOSS OF PROFITS,
+            LOSS OF BUSINESS OR ANTICIPATED SAVINGS, LOSS OF USE, LOSS OF
+            GOODWILL, LOSS OF DATA, AND WHETHER CAUSED BY TORT (INCLUDING
+            NEGLIGENCE), BREACH OF CONTRACT, OR OTHERWISE, EVEN IF FORESEEABLE.
+          </p>
+          <p>
+            THE FOREGOING DOES NOT AFFECT ANY LIABILITY THAT CANNOT BE EXCLUDED
+            OR LIMITED UNDER APPLICABLE LAW.
+          </p>
+
+          <h2>8. Indemnification</h2>
+          <p>
+            You agree to defend, indemnify, and hold harmless the Company, its
+            affiliates, licensors, and service providers, and its and their
+            respective officers, directors, employees, contractors, agents,
+            licensors, suppliers, successors, and assigns from and against any
+            claims, liabilities, damages, judgments, awards, losses, costs,
+            expenses, or fees (including reasonable attorneys' fees) arising out
+            of or relating to your violation of these Terms or your use of the
+            Service.
+          </p>
+
+          <h2>9. Termination</h2>
+          <p>
+            We may terminate or suspend your access to all or part of the
+            Service for any or no reason, including without limitation, any
+            violation of these Terms, in our sole discretion, without prior
+            notice or liability.
+          </p>
+          <p>
+            All provisions of the Terms which by their nature should survive
+            termination shall survive termination, including, without
+            limitation, ownership provisions, warranty disclaimers, indemnity,
+            and limitations of liability.
+          </p>
+
+          <h2>10. Governing Law and Jurisdiction</h2>
+          <p>
+            All matters relating to the Service and these Terms, and any dispute
+            or claim arising therefrom or related thereto (in each case,
+            including non-contractual disputes or claims), shall be governed by
+            and construed in accordance with the internal laws of the State of
+            [Your State, e.g., California] without giving effect to any choice
+            or conflict of law provision or rule.
+          </p>
+          <p>
+            Any legal suit, action, or proceeding arising out of, or related to,
+            these Terms or the Service shall be instituted exclusively in the
+            federal courts of the United States or the courts of the State of
+            [Your State] in each case located in the City of [Your City] and
+            County of [Your County], although we retain the right to bring any
+            suit, action, or proceeding against you for breach of these Terms in
+            your country of residence or any other relevant country.
+          </p>
+          <!-- You might want to consider arbitration clauses here after legal consultation -->
+
+          <h2>11. Changes to Terms of Service</h2>
+          <p>
+            We may revise and update these Terms from time to time in our sole
+            discretion. All changes are effective immediately when we post them
+            and apply to all access to and use of the Service thereafter. Your
+            continued use of the Service following the posting of revised Terms
+            means that you accept and agree to the changes. You are expected to
+            check this page frequently so you are aware of any changes, as they
+            are binding on you.
+          </p>
+
+          <h2>12. Waiver and Severability</h2>
+          <p>
+            No waiver by the Company of any term or condition set out in these
+            Terms shall be deemed a further or continuing waiver of such term or
+            condition or a waiver of any other term or condition, and any
+            failure of the Company to assert a right or provision under these
+            Terms shall not constitute a waiver of such right or provision.
+          </p>
+          <p>
+            If any provision of these Terms is held by a court or other tribunal
+            of competent jurisdiction to be invalid, illegal, or unenforceable
+            for any reason, such provision shall be eliminated or limited to the
+            minimum extent such that the remaining provisions of the Terms will
+            continue in full force and effect.
+          </p>
+
+          <h2>13. Entire Agreement</h2>
+          <p>
+            These Terms and our Privacy Policy constitute the sole and entire
+            agreement between you and HAKTOPUS regarding the Service and
+            supersede all prior and contemporaneous understandings, agreements,
+            representations, and warranties, both written and oral, regarding
+            the Service.
+          </p>
+
+          <h2>14. Contact Information</h2>
+          <p>
+            If you have any questions about these Terms of Service, please
+            contact us:
+          </p>
+          <ul>
+            <li>By email: support@haktopus.com</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer (Copied from your main page) -->
+    <footer
+      class="site-footer-bottom section-padding"
+      style="padding-top: 35px; padding-bottom: 35px"
+    >
+      <div class="container footer-bottom-container">
+        <div class="footer-links">
+          <a href="/privacy-policy">Privacy Policy</a>
+          <a href="/terms-of-service">Terms of Service</a>
+          <a href="/contact">Contact Us</a>
+          <!-- Create this page or link to mailto: -->
+        </div>
+        <div class="footer-copyright">
+          © <span id="currentYear"></span> HAKTOPUS. All Rights Reserved.
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("currentYear").textContent =
+        new Date().getFullYear();
+      // Basic mobile nav toggle logic (if not already in a global script.js)
+      const mobileNavToggle = document.getElementById("mobile-nav-toggle");
+      const mainNav = document.getElementById("main-nav");
+      if (mobileNavToggle && mainNav) {
+        mobileNavToggle.addEventListener("click", () => {
+          mainNav.classList.toggle("active");
+          mobileNavToggle.classList.toggle("active");
+          const isExpanded = mainNav.classList.contains("active");
+          mobileNavToggle.setAttribute("aria-expanded", isExpanded);
+          document.body.classList.toggle("no-scroll", isExpanded);
+        });
+      }
+    </script>
+    <script>
+      window.addEventListener("load", function () {
+        const preloader = document.getElementById("preloader");
+        const body = document.body;
+
+        if (preloader) {
+          preloader.classList.add("hidden"); // Hides the preloader
+        } else {
+          console.warn("Preloader element not found."); // Good to have this check
+        }
+
+        if (body) {
+          body.classList.add("loaded"); // Makes the body visible
+        } else {
+          console.error("Body element not found - critical error!");
+        }
+      });
+    </script>
+  </body>
+</html>

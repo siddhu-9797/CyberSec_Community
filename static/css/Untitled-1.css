@@ -1,0 +1,2166 @@
+/* static/simulation.css */
+/* --- FULL REWRITE WITH HORIZONTAL SCROLLING FOR SIDEBAR ON MOBILE --- */
+
+/* ========================================================================== */
+/* --- 1. Global Styles & Theming --- */
+/* ========================================================================== */
+
+/* --- 1.1 Root Variables (Color Palette, Fonts, Transitions, Status Colors) --- */
+:root {
+  /* -- Core Palette -- */
+  --dark-bg: #04080f;
+  --dark-surface: #0a101a;
+  --dark-card: #101827;
+  --accent-bg: #1a2333;
+
+  /* -- Neon Accents -- */
+  --neon-cyan: #09eef5;
+  --neon-green: #03fc84;
+  --neon-magenta: #fa2cff;
+  --neon-blue: #2c7cff;
+
+  /* -- Status & Severity Colors -- */
+  --alert-red: #ff3b30;
+  --warning-yellow: #ffcc00;
+  --info-blue: var(--neon-blue);
+  --low-gray: #6b7f99;
+  /* -- Flash Colors (For JS background flashes) -- */
+  --flash-red-bg: rgba(255, 59, 48, 0.3);
+  --flash-yellow-bg: rgba(255, 204, 0, 0.3);
+  --flash-blue-bg: rgba(44, 124, 255, 0.3);
+  --flash-green-bg: rgba(3, 252, 132, 0.2);
+
+  /* -- Text Colors -- */
+  --text-primary: #eef4ff;
+  --text-secondary: #a3b8cc;
+  --text-tertiary: var(--low-gray);
+
+  /* -- Glassmorphism Effect -- */
+  --glass-bg: rgba(16, 24, 39, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+
+  /* -- Fonts -- */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-display: "Outfit", sans-serif;
+
+  /* -- Transitions -- */
+  --transition-fast: 0.2s ease-out;
+  --transition-normal: 0.4s ease-out;
+  --transition-panel-toggle: 0.3s ease-in-out;
+  --transition-button: background-color var(--transition-fast),
+    border-color var(--transition-fast), color var(--transition-fast),
+    box-shadow var(--transition-fast), transform 0.1s ease;
+
+  /* -- System Status Color Mapping (data-status) -- */
+  --status-nominal: var(--neon-green);
+  --status-unknown: var(--text-tertiary);
+  --status-degraded: var(--warning-yellow);
+  --status-connecting: var(--info-blue);
+  --status-highload: var(--warning-yellow);
+  --status-anomalous: var(--warning-yellow);
+  --status-highfailures: var(--alert-red);
+  --status-encrypting: var(--alert-red);
+  --status-isolating: var(--info-blue);
+  --status-isolated: var(--text-secondary);
+  --status-mitigating: var(--info-blue);
+  --status-undermitigation: var(--info-blue);
+  --status-locking: var(--warning-yellow);
+  --status-accessreview: var(--info-blue);
+  --status-highegress: var(--alert-red);
+  --status-shaping: var(--info-blue);
+  --status-offline: var(--text-secondary);
+  --status-critical: var(--alert-red);
+  --status-compromised: var(--alert-red);
+  --status-loginunavailable: var(--warning-yellow);
+
+  /* -- Agent Status Color Mapping (data-state) -- */
+  --agent-available: var(--neon-green);
+  --agent-investigating: var(--info-blue);
+  --agent-busymonitoring: var(--info-blue);
+  --agent-busyexternalcall: var(--text-tertiary);
+  --agent-oncallwithcto: var(--neon-magenta);
+  --agent-waitingctoresponse: var(--warning-yellow);
+  --agent-tryingtocallcto: var(--warning-yellow);
+}
+
+/* --- 1.2 Base Resets & Document Styles --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--dark-bg);
+  font-size: 16px;
+  height: 100%; /* Ensure html takes full height */
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow: hidden; /* Prevent body scrollbars */
+  display: flex; /* Used for centering setup, overridden by sim wrapper */
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Ensure body takes full viewport height */
+  height: 100%; /* Match html height */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Firefox scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-border) transparent;
+}
+
+/* --- 1.3 Utility Styles --- */
+
+/* Custom Scrollbars (WebKit) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--glass-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Hidden Class */
+.hidden {
+  display: none !important;
+}
+
+/* Glassmorphism Helper Class */
+.glass-morphism {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 12px;
+}
+
+/* ========================================================================== */
+/* --- 2. General Button Styles --- */
+/* ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: var(--transition-button);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+.btn:active {
+  transform: scale(0.97);
+  filter: brightness(0.95);
+}
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  filter: grayscale(50%);
+}
+
+/* Primary Button */
+.btn-primary {
+  background: linear-gradient(45deg, var(--neon-green), var(--neon-cyan));
+  color: var(--dark-bg);
+  box-shadow: 0 2px 10px rgba(3, 252, 132, 0.2);
+}
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 4px 15px rgba(3, 252, 132, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--glass-border);
+}
+.btn-secondary:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+/* Launch Button Modifier (e.g., Start Sim) */
+.btn-launch svg {
+  margin-left: 8px;
+}
+
+/* ========================================================================== */
+/* --- 3. Simulation Wrapper --- */
+/* ========================================================================== */
+
+.simulation-wrapper {
+  width: 100%;
+  height: 100vh; /* Ensure wrapper takes full viewport height */
+  position: relative;
+  display: flex; /* Use flex for primary layout control */
+  flex-direction: column; /* Stack setup/sim interface vertically */
+}
+
+/* ========================================================================== */
+/* --- 4. Setup Screen (#setup-screen) --- */
+/* ========================================================================== */
+
+.setup-screen {
+  position: absolute; /* Overlay */
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(4, 8, 15, 0.8);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+  padding: 1rem; /* Add padding for small screens */
+}
+.setup-screen.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.setup-content {
+  padding: 40px;
+  width: 90%;
+  max-width: 550px;
+  text-align: center;
+  transform: translateY(-20px);
+  transition: transform var(--transition-normal);
+  max-height: 90vh; /* Limit height */
+  overflow-y: auto; /* Enable scroll if needed */
+  /* Inherits .glass-morphism from HTML */
+}
+.setup-screen.active .setup-content {
+  transform: translateY(0);
+}
+
+.setup-title {
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  margin-bottom: 30px;
+}
+
+.setup-options {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-bottom: 35px;
+}
+
+.setup-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+.setup-group label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.setup-group select,
+.setup-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--glass-border);
+  background-color: rgba(0, 0, 0, 0.3);
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: var(--font-sans);
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+.setup-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23a3b8cc' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+.setup-group select:focus,
+.setup-group input:focus {
+  outline: none;
+  border-color: var(--neon-cyan);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.setup-group input[type="number"] {
+  background-image: none;
+}
+
+.setup-error-message {
+  color: var(--alert-red);
+  margin-top: 15px;
+  font-size: 0.9rem;
+  height: 1.5em;
+}
+
+/* Scenario Explanation Area (from inline style) */
+.scenario-explanation {
+  margin-bottom: 2rem;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #e0e0e0;
+  transition: opacity 0.4s ease-out, max-height 0.4s ease-out,
+    margin-top 0.4s ease-out, padding 0.4s ease-out;
+  opacity: 1;
+  max-height: 1500px;
+  overflow: hidden;
+  text-align: left;
+  flex-shrink: 0;
+}
+.scenario-explanation.hidden {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  border-width: 0;
+  overflow: hidden;
+}
+.scenario-explanation h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #ffffff;
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 8px;
+  font-size: 1.25rem;
+}
+.scenario-explanation p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+  font-family: "Inter", sans-serif;
+}
+.scenario-explanation strong {
+  color: #ffc107;
+  font-weight: 700;
+}
+.scenario-explanation iframe {
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  border: none;
+  width: 100%;
+  height: 400px;
+}
+@media (max-width: 767.98px) {
+  .scenario-explanation iframe {
+    height: 300px;
+  }
+}
+@media (max-width: 575.98px) {
+  .scenario-explanation iframe {
+    height: 250px;
+  }
+}
+
+/* Start Button (from inline style) */
+#start-sim-button.btn-launch {
+  padding: 0.9rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-top: auto;
+  border-radius: 6px;
+  transition: background-color 0.2s ease-in-out, transform 0.15s ease-out,
+    box-shadow 0.2s ease-out;
+  will-change: transform;
+  flex-shrink: 0;
+  background-color: #007bff; /* Default style had this, keep or use btn-primary */
+  /* color: #fff; */ /* Add if needed */
+  border: none;
+}
+#start-sim-button.btn-launch:hover {
+  background-color: #0056b3;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+#start-sim-button.btn-launch:active {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+}
+
+/* ========================================================================== */
+/* --- 5. Main Simulation Interface (#simulation-interface) --- */
+/* ========================================================================== */
+
+.simulation-interface {
+  width: 100%;
+  height: 100%; /* Fill remaining height within wrapper */
+  display: flex; /* Use flex for vertical stacking of header/content */
+  flex-direction: column;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  background-color: var(--dark-bg); /* Ensure background covers */
+}
+.simulation-interface.active {
+  opacity: 1;
+}
+
+/* --- 5.1 Simulation Header (.sim-header) --- */
+.sim-header {
+  flex-shrink: 0; /* Prevent header shrinking */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 25px;
+  background-color: var(--dark-surface);
+  border-bottom: 1px solid var(--glass-border);
+  position: relative; /* For absolute positioning child in mobile */
+}
+.sim-title {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+.sim-time-display {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+#sim-intensity {
+  color: var(--neon-cyan);
+  font-weight: 700;
+}
+.sim-status {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+.sim-status .status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.sim-status.running .status-dot {
+  background-color: var(--neon-green);
+  animation: pulse 1.5s infinite ease-in-out;
+  box-shadow: 0 0 8px var(--neon-green);
+}
+.sim-status.paused .status-dot {
+  background-color: var(--warning-yellow);
+}
+.sim-status.ended .status-dot {
+  background-color: var(--text-tertiary);
+}
+.sim-status.error .status-dot {
+  background-color: var(--alert-red);
+}
+.sim-status.running #sim-status-text {
+  color: var(--neon-green);
+}
+.sim-status.paused #sim-status-text {
+  color: var(--warning-yellow);
+}
+.sim-status.ended #sim-status-text {
+  color: var(--text-tertiary);
+}
+.sim-status.error #sim-status-text {
+  color: var(--alert-red);
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* --- 5.2 Main Content Layout (.sim-main-content) --- */
+.sim-main-content {
+  flex-grow: 1; /* *** CRITICAL: Make content area fill remaining vertical space *** */
+  display: grid;
+  grid-template-columns: 1fr 380px; /* Default: Main col flexible, side col fixed */
+  grid-template-rows: 1fr; /* Default: Single row */
+  gap: 20px;
+  padding: 20px;
+  overflow: hidden; /* Prevent this container from scrolling */
+  min-height: 0; /* Necessary for flex/grid children with overflow */
+}
+
+.sim-column-main {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Contains elements that will scroll internally */
+  min-height: 0; /* Prevent pushing parent */
+}
+
+.sim-column-side {
+  display: flex;
+  flex-direction: column; /* Default: Stack panels vertically */
+  gap: 20px;
+  overflow: hidden; /* Contains elements that will scroll internally */
+  padding-right: 5px; /* Space for scrollbars inside */
+  min-height: 0; /* Prevent pushing parent */
+}
+
+/* ========================================================================== */
+/* --- 6. Main Column Components (.sim-column-main) --- */
+/* ========================================================================== */
+
+/* --- 6.1 Message Display Area (#message-display) --- */
+.message-display {
+  flex-grow: 1; /* Take available space in main column */
+  overflow-y: auto; /* Enable vertical scroll */
+  overflow-x: hidden;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column-reverse; /* Newest at Bottom (Visual) */
+  min-height: 100px; /* Give it some minimum height */
+}
+
+/* Individual Message Bubble */
+.message-display .message {
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  max-width: 85%;
+  line-height: 1.5;
+  position: relative;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: messageFadeIn 0.4s ease-out forwards;
+}
+@keyframes messageFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Message Types */
+.message.player {
+  background-color: var(--accent-bg);
+  align-self: flex-end;
+  border-top-right-radius: 0;
+  text-align: right;
+}
+.message.agent {
+  background-color: var(--dark-card);
+  align-self: flex-start;
+  border-top-left-radius: 0;
+}
+.message.system,
+.message.system-info,
+.message.system-debug,
+.message.system-websocket {
+  background-color: transparent;
+  border: 1px dashed var(--glass-border);
+  align-self: center;
+  max-width: 95%;
+  text-align: center;
+}
+.message.system-alert,
+.message.system-error {
+  background-color: rgba(255, 59, 48, 0.15);
+  border: 1px solid var(--alert-red);
+  align-self: center;
+  max-width: 95%;
+  text-align: center;
+}
+.message.system-decision {
+  background-color: rgba(9, 238, 245, 0.15);
+  border: 1px solid var(--neon-cyan);
+  align-self: center;
+  max-width: 95%;
+  text-align: center;
+}
+.message.system-internal,
+.message.system-command,
+.message.system-status,
+.message.system-comms,
+.message.system-conversation,
+.message.system-warning {
+  background-color: rgba(3, 252, 132, 0.1);
+  border: 1px solid var(--neon-green);
+  align-self: center;
+  max-width: 95%;
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* Message Speaker */
+.message-speaker {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+.message.player .message-speaker {
+  color: var(--neon-green);
+}
+.message.agent .message-speaker {
+  color: var(--neon-magenta);
+}
+.message.system .message-speaker,
+.message.system-info .message-speaker,
+.message.system-debug .message-speaker,
+.message.system-websocket .message-speaker,
+.message.system-decision .message-speaker {
+  color: var(--neon-cyan);
+}
+.message.system-alert .message-speaker,
+.message.system-error .message-speaker {
+  color: var(--alert-red);
+}
+.message.system-internal .message-speaker,
+.message.system-command .message-speaker,
+.message.system-status .message-speaker,
+.message.system-conversation .message-speaker,
+.message.system-warning .message-speaker {
+  color: var(--neon-green);
+}
+
+/* Message Text */
+.message-text {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+/* Text Color Overrides */
+.message.system .message-text,
+.message.system-info .message-text,
+.message.system-debug .message-text {
+  color: var(--text-secondary);
+}
+.message.system-alert .message-text,
+.message.system-error .message-text {
+  color: var(--alert-red);
+}
+.message.system-decision .message-text {
+  color: var(--neon-cyan);
+}
+
+/* Message Notification */
+.message-notification {
+  font-weight: 700;
+  font-size: 0.8rem;
+  margin-top: 8px;
+  color: var(--warning-yellow);
+  border-top: 1px dashed rgba(255, 204, 0, 0.3);
+  padding-top: 5px;
+}
+.message.system-alert .message-notification {
+  color: var(--alert-red);
+  border-color: rgba(255, 59, 48, 0.3);
+}
+.message.system-decision .message-notification {
+  color: var(--neon-cyan);
+  border-color: rgba(9, 238, 245, 0.3);
+}
+
+/* Inline Message Action Buttons */
+.message-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+}
+.message-actions.hidden {
+  display: none;
+}
+.message-actions .btn {
+  padding: 5px 12px;
+  font-size: 0.85rem;
+}
+/* Specific Answer/Ignore Button styles */
+.btn-answer-call {
+  background-color: var(--neon-green);
+  color: var(--dark-bg);
+  border-color: var(--neon-green);
+  box-shadow: 0 2px 8px rgba(3, 252, 132, 0.15);
+}
+.btn-answer-call:hover:not(:disabled) {
+  background-color: #33ff99;
+  color: var(--dark-bg);
+  box-shadow: 0 3px 12px rgba(3, 252, 132, 0.3);
+  transform: translateY(-1px);
+}
+.btn-ignore-call {
+  background-color: var(--alert-red);
+  color: var(--text-primary);
+  border-color: var(--alert-red);
+}
+.btn-ignore-call:hover:not(:disabled) {
+  background-color: #ff5f52;
+  color: var(--text-primary);
+  border-color: #ff5f52;
+  transform: translateY(-1px);
+}
+
+/* --- 6.2 Special Interaction Containers (Decision, Analyst, Yes/No) --- */
+.decision-point-container,
+.analyst-briefing-container,
+.yes-no-prompt-container {
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px dashed var(--neon-cyan);
+  background: rgba(9, 238, 245, 0.05);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Interaction Container Headings */
+.decision-point-container h3,
+.analyst-briefing-container h3 {
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  color: var(--neon-cyan);
+}
+
+/* Decision Point Specifics */
+.decision-summary {
+  white-space: pre-wrap;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 4px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+.decision-options {
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.decision-options .btn-option {
+  background-color: var(--accent-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 8px 15px;
+  font-size: 0.9rem;
+}
+.decision-options .btn-option:hover:not(:disabled) {
+  background-color: var(--neon-cyan);
+  color: var(--dark-bg);
+  border-color: var(--neon-cyan);
+  transform: translateY(-1px);
+}
+.decision-prompt {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Yes/No Prompt Specifics */
+.yes-no-prompt-container p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+#yes-no-prompt-text {
+  margin-bottom: 5px;
+}
+
+/* Analyst Briefing Specifics */
+.analyst-briefing-container p#analyst-briefing-context {
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-align: left;
+}
+.analyst-briefing-container textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--glass-border);
+  background-color: rgba(0, 0, 0, 0.3);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: var(--font-sans);
+  margin-bottom: 15px;
+  resize: vertical;
+  transition: border-color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+.analyst-briefing-container textarea:focus {
+  outline: none;
+  border-color: var(--neon-cyan);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Focus Mode Controls */
+#focus-mode-controls {
+  text-align: center;
+  padding: 15px;
+  flex-shrink: 0;
+}
+#focus-mode-controls.hidden {
+  display: none;
+} /* Use utility class */
+
+/* --- 6.3 Player Input Area (#player-input-form) --- */
+.player-input-form {
+  flex-shrink: 0; /* Prevent input area shrinking */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background-color: var(--dark-card);
+  border-top: 1px solid var(--glass-border);
+  border-radius: 8px;
+  position: relative;
+  border: 2px solid transparent; /* For flash feedback */
+  transition: border-color 0.3s ease-out;
+}
+.btn-command-helper {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  padding: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+  line-height: 1;
+  transition: color var(--transition-fast), transform 0.1s ease;
+}
+.btn-command-helper svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+.btn-command-helper:hover {
+  color: var(--neon-cyan);
+}
+.btn-command-helper:active {
+  transform: scale(0.9);
+}
+
+.input-prefix {
+  font-family: var(--font-mono);
+  color: var(--neon-green);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+#player-input {
+  flex-grow: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: var(--font-sans);
+}
+#player-input:disabled {
+  background-color: rgba(0, 0, 0, 0.2);
+  cursor: not-allowed;
+}
+.btn-send {
+  background: none;
+  border: none;
+  color: var(--neon-cyan);
+  padding: 5px;
+  cursor: pointer;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+.btn-send:hover {
+  color: var(--neon-green);
+  transform: scale(1.1);
+}
+.btn-send:active {
+  transform: scale(0.95);
+  color: var(--neon-green);
+}
+.player-input-form.disabled {
+  filter: grayscale(70%);
+  opacity: 0.7;
+}
+
+/* Input Feedback Area (from inline style) */
+.input-feedback {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 1.5em;
+  margin-top: 6px;
+  padding: 0 5px;
+  font-size: 0.85em;
+  flex-shrink: 0;
+}
+.word-count-display {
+  color: #adb5bd;
+  transition: color 0.2s ease-in-out;
+}
+.word-count-display.error {
+  color: #ffc107;
+}
+.error-container {
+  display: flex;
+  align-items: center;
+  color: #dc3545;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out, visibility 0s linear 0.2s;
+}
+.error-container.active {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+}
+#input-error-icon {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  margin-right: 5px;
+  flex-shrink: 0;
+}
+.input-error-message {
+  font-weight: 500;
+}
+#player-input.input-error {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25) !important;
+}
+
+/* Input Flash Animations */
+@keyframes flash-border-green {
+  0%,
+  100% {
+    border-color: transparent;
+  }
+  50% {
+    border-color: var(--neon-green);
+  }
+}
+/* .player-input-form.command-sent-success { animation: flash-border-green 0.5s ease-out; } */
+
+/* ========================================================================== */
+/* --- 7. Sidebar Components (.sim-column-side) --- */
+/* ========================================================================== */
+
+/* --- 7.1 Common Status Panel Styles --- */
+.status-panel {
+  padding: 0; /* Padding applied to header/content */
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Prevent panel from growing indefinitely */
+  overflow: hidden; /* Clip content, internal lists scroll */
+  /* Inherits .glass-morphism from HTML */
+}
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 20px 0 20px;
+  flex-shrink: 0;
+}
+.panel-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--glass-border);
+  flex-grow: 1;
+}
+.panel-header-buttons {
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
+  margin-left: 10px;
+  flex-shrink: 0;
+}
+.btn-panel-toggle {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0 0 5px;
+  transition: color var(--transition-fast), transform 0.1s ease;
+}
+.btn-panel-toggle:hover {
+  color: var(--text-primary);
+}
+.btn-panel-toggle:active {
+  transform: scale(0.9);
+  color: var(--text-primary);
+}
+.toggle-icon {
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+}
+.btn-panel-focus {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 0 5px;
+  line-height: 1;
+  transition: color var(--transition-fast), transform 0.1s ease;
+  vertical-align: middle;
+}
+.btn-panel-focus svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+.btn-panel-focus:hover {
+  color: var(--neon-cyan);
+}
+.btn-panel-focus:active {
+  transform: scale(0.9);
+}
+
+/* Panel Content Area */
+.panel-content {
+  padding: 15px 20px 20px 20px;
+  flex-grow: 1; /* Allow content to fill panel space */
+  overflow: hidden; /* Clip content, internal lists scroll */
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Prevent pushing parent */
+  transition: max-height var(--transition-panel-toggle),
+    opacity var(--transition-panel-toggle),
+    padding var(--transition-panel-toggle);
+  max-height: 70vh; /* Default max height, can be large */
+  opacity: 1;
+}
+.panel-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Minimized Panel State */
+.status-panel.panel-minimized {
+  flex-grow: 0;
+  flex-basis: auto;
+}
+.status-panel.panel-minimized .panel-content {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+.status-panel.panel-minimized .panel-header h4 {
+  border-bottom-color: transparent;
+}
+
+/* --- 7.2 Focus Mode Styles (Panel in Main Column) --- */
+body.panel-is-focused .sim-column-main > #message-display,
+body.panel-is-focused .sim-column-main > #player-input-form,
+body.panel-is-focused .sim-column-main > .input-feedback, /* Also hide feedback */
+body.panel-is-focused .sim-column-main > .decision-point-container,
+body.panel-is-focused .sim-column-main > .analyst-briefing-container,
+body.panel-is-focused .sim-column-main > .yes-no-prompt-container {
+  display: none; /* Hide original main content */
+}
+body.panel-is-focused #focus-mode-controls {
+  display: block !important;
+} /* Show defocus button */
+/* Focused panel takes main column space */
+.sim-column-main > .status-panel.is-focused-main {
+  display: flex !important;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100%;
+  min-height: 0;
+  border: 1px solid var(--glass-border);
+}
+.sim-column-main > .status-panel.is-focused-main .panel-content {
+  max-height: none;
+  height: calc(100% - 60px);
+  overflow-y: auto;
+  padding: 15px 20px 20px 20px;
+}
+/* Hide focus button on the focused panel */
+.status-panel.is-focused-main .btn-panel-focus {
+  display: none;
+}
+
+/* --- 7.3 Common Status List Item Styles --- */
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  padding: 3px 5px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+.status-key {
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 10px;
+}
+.status-value-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-align: right;
+}
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.status-value {
+  font-weight: 700;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+/* --- 7.4 System Status List (#system-status-list) --- */
+#system-status-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  min-height: 50px;
+  padding-right: 5px;
+}
+/* Color Coding (Applied via data-status) - Abbreviated for brevity */
+.status-item[data-status="NOMINAL"] .status-dot {
+  background-color: var(--status-nominal);
+}
+.status-item[data-status="NOMINAL"] .status-value {
+  color: var(--status-nominal);
+}
+.status-item[data-status="UNKNOWN"] .status-dot {
+  background-color: var(--status-unknown);
+}
+.status-item[data-status="UNKNOWN"] .status-value {
+  color: var(--status-unknown);
+}
+.status-item[data-status="DEGRADED"] .status-dot {
+  background-color: var(--status-degraded);
+}
+.status-item[data-status="DEGRADED"] .status-value {
+  color: var(--status-degraded);
+}
+.status-item[data-status="COMPROMISED"] .status-dot {
+  background-color: var(--status-compromised);
+  animation: pulse-red 0.8s infinite;
+} /* Example */
+.status-item[data-status="COMPROMISED"] .status-value {
+  color: var(--status-compromised);
+} /* Example */
+/* ... (Include all other data-status rules as before) ... */
+.status-item[data-status="CONNECTING"] .status-dot {
+  background-color: var(--status-connecting);
+}
+.status-item[data-status="CONNECTING"] .status-value {
+  color: var(--status-connecting);
+}
+.status-item[data-status="HIGH_LOAD"] .status-dot {
+  background-color: var(--status-highload);
+}
+.status-item[data-status="HIGH_LOAD"] .status-value {
+  color: var(--status-highload);
+}
+.status-item[data-status="ANOMALOUS_TRAFFIC"] .status-dot {
+  background-color: var(--status-anomalous);
+}
+.status-item[data-status="ANOMALOUS_TRAFFIC"] .status-value {
+  color: var(--status-anomalous);
+}
+.status-item[data-status="HIGH_FAILURES"] .status-dot {
+  background-color: var(--status-highfailures);
+}
+.status-item[data-status="HIGH_FAILURES"] .status-value {
+  color: var(--status-highfailures);
+}
+.status-item[data-status="ENCRYPTING"] .status-dot {
+  background-color: var(--status-encrypting);
+  animation: pulse-red 1s infinite;
+}
+.status-item[data-status="ENCRYPTING"] .status-value {
+  color: var(--status-encrypting);
+}
+.status-item[data-status="ISOLATING"] .status-dot {
+  background-color: var(--status-isolating);
+  animation: pulse-blue 1s infinite;
+}
+.status-item[data-status="ISOLATING"] .status-value {
+  color: var(--status-isolating);
+}
+.status-item[data-status="ISOLATED"] .status-dot {
+  background-color: var(--status-isolated);
+}
+.status-item[data-status="ISOLATED"] .status-value {
+  color: var(--status-isolated);
+}
+.status-item[data-status="MITIGATING"] .status-dot {
+  background-color: var(--status-mitigating);
+}
+.status-item[data-status="MITIGATING"] .status-value {
+  color: var(--status-mitigating);
+}
+.status-item[data-status="UNDER_MITIGATION"] .status-dot {
+  background-color: var(--status-undermitigation);
+}
+.status-item[data-status="UNDER_MITIGATION"] .status-value {
+  color: var(--status-undermitigation);
+}
+.status-item[data-status="LOCKING_ACCOUNT"] .status-dot {
+  background-color: var(--status-locking);
+}
+.status-item[data-status="LOCKING_ACCOUNT"] .status-value {
+  color: var(--status-locking);
+}
+.status-item[data-status="ACCESS_REVIEW"] .status-dot {
+  background-color: var(--status-accessreview);
+}
+.status-item[data-status="ACCESS_REVIEW"] .status-value {
+  color: var(--status-accessreview);
+}
+.status-item[data-status="ANOMALOUS_ACCESS"] .status-dot {
+  background-color: var(--status-highfailures);
+  animation: pulse-red 1s infinite;
+}
+.status-item[data-status="ANOMALOUS_ACCESS"] .status-value {
+  color: var(--status-highfailures);
+}
+.status-item[data-status="HIGH_EGRESS"] .status-dot {
+  background-color: var(--status-highegress);
+  animation: pulse-red 1s infinite;
+}
+.status-item[data-status="HIGH_EGRESS"] .status-value {
+  color: var(--status-highegress);
+}
+.status-item[data-status="TRAFFIC_SHAPING"] .status-dot {
+  background-color: var(--status-shaping);
+}
+.status-item[data-status="TRAFFIC_SHAPING"] .status-value {
+  color: var(--status-shaping);
+}
+.status-item[data-status="OFFLINE"] .status-dot {
+  background-color: var(--status-offline);
+}
+.status-item[data-status="OFFLINE"] .status-value {
+  color: var(--status-offline);
+}
+.status-item[data-status*="CRITICAL"] .status-dot {
+  background-color: var(--status-critical);
+  animation: pulse-red 0.8s infinite;
+}
+.status-item[data-status*="CRITICAL"] .status-value {
+  color: var(--status-critical);
+}
+.status-item[data-status*="ENCRYPTED"] .status-dot {
+  background-color: var(--status-encrypting);
+  animation: pulse-red 0.8s infinite;
+}
+.status-item[data-status*="ENCRYPTED"] .status-value {
+  color: var(--status-encrypting);
+}
+.status-item[data-status*="Manual"] .status-value::after {
+  content: " (M)";
+  font-size: 0.7em;
+  opacity: 0.8;
+}
+.status-item[data-status*="ANOMALOUS_ADMIN_LOGIN"] .status-dot {
+  background-color: var(--status-critical);
+  animation: pulse-red 0.8s infinite;
+}
+.status-item[data-status*="ANOMALOUS_ADMIN_LOGIN"] .status-value {
+  color: var(--status-critical);
+}
+.status-item[data-status="LOGIN_UNAVAILABLE"] .status-dot {
+  background-color: var(--status-loginunavailable);
+}
+.status-item[data-status="LOGIN_UNAVAILABLE"] .status-value {
+  color: var(--status-loginunavailable);
+}
+
+/* Status Update Flash Animations */
+@keyframes flash-bg-red {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: var(--flash-red-bg);
+  }
+}
+@keyframes flash-bg-yellow {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: var(--flash-yellow-bg);
+  }
+}
+@keyframes flash-bg-blue {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: var(--flash-blue-bg);
+  }
+}
+@keyframes flash-bg-green {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: var(--flash-green-bg);
+  }
+}
+/* .status-item.updated-critical { animation: flash-bg-red 0.6s ease-out; } */
+/* .status-item.updated-warning { animation: flash-bg-yellow 0.6s ease-out; } */
+
+/* --- 7.5 Agent Status List (#agent-status-list) --- */
+#agent-status-list {
+  overflow-y: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-height: 50px;
+  max-height: 35vh;
+  padding-right: 5px;
+  margin-bottom: 15px;
+}
+#agent-status-list .agent-item {
+}
+#agent-status-list .agent-name {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+#agent-status-list .agent-status-value {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+/* Agent Actions Container */
+.agent-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+/* Agent Action Buttons */
+.btn-agent-action {
+  padding: 4px 6px;
+  font-size: 0.9rem;
+  line-height: 1;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-button);
+}
+.btn-agent-action svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+}
+.btn-agent-call {
+  background-color: rgba(44, 124, 255, 0.2);
+  color: var(--info-blue);
+  border-color: rgba(44, 124, 255, 0.4);
+}
+.btn-agent-call:hover:not(:disabled) {
+  background-color: rgba(44, 124, 255, 0.4);
+  color: var(--text-primary);
+  border-color: var(--info-blue);
+}
+.btn-agent-end-call {
+  background-color: rgba(255, 59, 48, 0.2);
+  color: var(--alert-red);
+  border-color: rgba(255, 59, 48, 0.4);
+}
+.btn-agent-end-call:hover:not(:disabled) {
+  background-color: rgba(255, 59, 48, 0.4);
+  color: var(--text-primary);
+  border-color: var(--alert-red);
+}
+.btn-agent-action.hidden {
+  display: none !important;
+}
+/* Agent Thinking Indicator */
+.agent-thinking-indicator {
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--neon-magenta);
+}
+.agent-thinking-indicator.hidden {
+  display: none !important;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Color Coding (Applied via data-state) - Abbreviated */
+.agent-item[data-state="available"] .status-dot {
+  background-color: var(--agent-available);
+}
+.agent-item[data-state="available"] .status-value {
+  color: var(--agent-available);
+}
+.agent-item[data-state="investigating"] .status-dot {
+  background-color: var(--agent-investigating);
+}
+.agent-item[data-state="investigating"] .status-value {
+  color: var(--agent-investigating);
+}
+/* ... (Include all other data-state rules as before) ... */
+.agent-item[data-state="busy_monitoring"] .status-dot {
+  background-color: var(--agent-busymonitoring);
+}
+.agent-item[data-state="busy_monitoring"] .status-value {
+  color: var(--agent-busymonitoring);
+}
+.agent-item[data-state="busy_external_call"] .status-dot {
+  background-color: var(--agent-busyexternalcall);
+}
+.agent-item[data-state="busy_external_call"] .status-value {
+  color: var(--agent-busyexternalcall);
+}
+.agent-item[data-state="on_call_with_cto"] .status-dot {
+  background-color: var(--agent-oncallwithcto);
+  animation: pulse-magenta 1.5s infinite;
+}
+.agent-item[data-state="on_call_with_cto"] .status-value {
+  color: var(--agent-oncallwithcto);
+}
+.agent-item[data-state="waiting_cto_response"] .status-dot {
+  background-color: var(--agent-waitingctoresponse);
+  animation: pulse-yellow 1.5s infinite;
+}
+.agent-item[data-state="waiting_cto_response"] .status-value {
+  color: var(--agent-waitingctoresponse);
+}
+.agent-item[data-state="trying_to_call_cto"] .status-dot {
+  background-color: var(--agent-tryingtocallcto);
+  animation: pulse-yellow 1.5s infinite;
+}
+.agent-item[data-state="trying_to_call_cto"] .status-value {
+  color: var(--agent-tryingtocallcto);
+}
+
+/* Missed Calls Section */
+#missed-calls-section {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px dashed var(--glass-border);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.missed-calls-section h5 {
+  font-size: 0.8rem;
+  color: var(--warning-yellow);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+#missed-calls-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.85rem;
+  max-height: 10vh;
+  overflow-y: auto;
+} /* Limit height */
+#missed-calls-list li {
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.btn-return-call {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: var(--neon-cyan);
+  opacity: 0.7;
+  transition: opacity var(--transition-fast), transform 0.1s ease;
+}
+.btn-return-call:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+.btn-return-call:active {
+  transform: scale(0.95);
+  opacity: 1;
+}
+
+/* --- 7.6 Detailed Log Feed Panel --- */
+.log-feed-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  min-height: 50px;
+  padding-right: 5px;
+}
+.log-entry {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  margin-bottom: 5px;
+  padding: 3px 6px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.2);
+  border-left: 3px solid var(--text-tertiary);
+  opacity: 0;
+  transform: translateY(5px);
+  animation: logFadeIn 0.3s ease-out forwards;
+}
+@keyframes logFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.log-time {
+  color: var(--text-tertiary);
+  margin-right: 8px;
+}
+.log-severity {
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-right: 8px;
+}
+.log-severity.LOW {
+  color: var(--low-gray);
+}
+.log-severity.INFO {
+  color: var(--info-blue);
+}
+.log-severity.MEDIUM,
+.log-severity.WARN {
+  color: var(--warning-yellow);
+}
+.log-severity.HIGH,
+.log-severity.CRITICAL {
+  color: var(--alert-red);
+}
+.log-severity.CRITICAL {
+  animation: pulse-red 1s infinite;
+}
+.log-entry.severity-LOW {
+  border-left-color: var(--low-gray);
+}
+.log-entry.severity-INFO {
+  border-left-color: var(--info-blue);
+}
+.log-entry.severity-MEDIUM,
+.log-entry.severity-WARN {
+  border-left-color: var(--warning-yellow);
+}
+.log-entry.severity-HIGH,
+.log-entry.severity-CRITICAL {
+  border-left-color: var(--alert-red);
+}
+.log-source {
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-right: 8px;
+}
+.log-message {
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+/* --- 7.7 Pulsing Animations --- */
+@keyframes pulse-red {
+  0%,
+  100% {
+    opacity: 0.5;
+    box-shadow: 0 0 6px var(--alert-red);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--alert-red);
+  }
+}
+@keyframes pulse-blue {
+  0%,
+  100% {
+    opacity: 0.6;
+    box-shadow: 0 0 6px var(--info-blue);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--info-blue);
+  }
+}
+@keyframes pulse-magenta {
+  0%,
+  100% {
+    opacity: 0.6;
+    box-shadow: 0 0 7px var(--neon-magenta);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 12px var(--neon-magenta);
+  }
+}
+@keyframes pulse-yellow {
+  0%,
+  100% {
+    opacity: 0.6;
+    box-shadow: 0 0 7px var(--warning-yellow);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 12px var(--warning-yellow);
+  }
+}
+
+/* ========================================================================== */
+/* --- 8. Debrief Modal (#debrief-modal) --- */
+/* ========================================================================== */
+
+.sim-modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(4, 8, 15, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  padding: 20px;
+  transition: opacity var(--transition-normal),
+    visibility 0s linear var(--transition-normal);
+}
+.sim-modal.active {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s, 0s;
+}
+.sim-modal-inner {
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  transform: scale(0.95);
+  transition: transform var(--transition-normal);
+  overflow: hidden;
+  border-radius: 12px;
+}
+.sim-modal.active .sim-modal-inner {
+  transform: scale(1);
+}
+.sim-modal-content {
+  position: relative;
+  padding: 30px 40px;
+  border-radius: 12px; /* height: 100%; */
+  max-height: 90vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-border) transparent; /* Inherits .glass-morphism */
+}
+.sim-modal-content::-webkit-scrollbar {
+  width: 5px;
+}
+.sim-modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sim-modal-content::-webkit-scrollbar-thumb {
+  background-color: var(--glass-border);
+  border-radius: 10px;
+}
+.sim-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 2.2rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  line-height: 1;
+  padding: 5px;
+  z-index: 10;
+  transition: color var(--transition-fast), transform 0.1s ease;
+}
+.sim-modal-close:hover {
+  color: var(--text-primary);
+}
+.sim-modal-close:active {
+  transform: scale(0.9);
+  color: var(--text-primary);
+}
+#debrief-title {
+  font-size: 1.8rem;
+  color: var(--neon-cyan);
+  margin-bottom: 25px;
+  text-align: center;
+}
+#debrief-summary-points,
+#debrief-final-status,
+#debrief-performance-rating {
+  margin-bottom: 30px;
+}
+#debrief-summary-points h4,
+#debrief-final-status h4,
+#debrief-performance-rating h4 {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--glass-border);
+}
+#debrief-summary-points ul {
+  list-style: none;
+  padding: 0;
+}
+#debrief-summary-points ul,
+#debrief-final-status pre {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+}
+#debrief-summary-points li {
+  margin-bottom: 8px;
+}
+#debrief-performance-rating {
+  border-top: 1px solid var(--glass-border);
+  padding-top: 25px;
+}
+#rating-scores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.rating-score-item {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 10px;
+  border-radius: 6px;
+}
+.rating-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.rating-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+}
+.rating-value .max-score {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+/* Rating Value Colors (data-score) - Abbreviated */
+.rating-value[data-score="1"],
+.rating-value[data-score="2"],
+.rating-value[data-score="3"] {
+  color: var(--alert-red);
+}
+.rating-value[data-score="4"],
+.rating-value[data-score="5"],
+.rating-value[data-score="6"] {
+  color: var(--warning-yellow);
+}
+.rating-value[data-score="7"],
+.rating-value[data-score="8"] {
+  color: var(--neon-cyan);
+}
+.rating-value[data-score="9"],
+.rating-value[data-score="10"] {
+  color: var(--neon-green);
+}
+#rating-feedback {
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-style: italic;
+  line-height: 1.7;
+}
+#rating-error.error-message {
+  color: var(--alert-red);
+  font-weight: 500;
+}
+
+/* ========================================================================== */
+/* --- 9. Responsive Adjustments --- */
+/* ========================================================================== */
+
+/* --- Large Screens (Optional adjustment) --- */
+@media (max-width: 1200px) {
+  .sim-main-content {
+    grid-template-columns: 1fr 320px; /* Slightly smaller sidebar */
+  }
+}
+
+/* --- ## START: MOBILE / TABLET LAYOUT CHANGES ## --- */
+
+/* --- Medium Screens / Tablets (Apply horizontal scroll here) --- */
+@media (max-width: 992px) {
+  .sim-main-content {
+    grid-template-columns: 1fr; /* Switch to single column layout */
+    grid-template-rows: auto auto; /* Main content row, sidebar row */
+    overflow-y: auto; /* Allow main content area to scroll if needed */
+    overflow-x: hidden;
+  }
+
+  .sim-column-main {
+    /* Ensure main column can shrink if needed, though it has internal scroll */
+    min-height: 0;
+  }
+
+  /* --- Horizontal Scrolling Sidebar Container --- */
+  .sim-column-side {
+    display: flex; /* Use flex for horizontal layout */
+    flex-direction: row; /* Arrange panels horizontally */
+    flex-wrap: nowrap; /* *** PREVENT PANELS FROM WRAPPING *** */
+    overflow-x: auto; /* *** ENABLE HORIZONTAL SCROLLING *** */
+    overflow-y: hidden; /* Disable vertical scroll on container */
+    padding: 10px 0 10px 0; /* Add vertical padding, remove side padding */
+    gap: 15px; /* Space between panels */
+    min-height: 150px; /* Give the row some min height */
+    flex-shrink: 0; /* Prevent this row from shrinking away */
+
+    /* Optional: Style the horizontal scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: var(--glass-border) transparent;
+  }
+  .sim-column-side::-webkit-scrollbar {
+    height: 6px;
+  }
+  .sim-column-side::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  .sim-column-side::-webkit-scrollbar-thumb {
+    background-color: var(--glass-border);
+    border-radius: 3px;
+  }
+  .sim-column-side::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .status-panel {
+    /* *** Give panels a fixed width to cause overflow *** */
+    width: 300px;
+    flex-shrink: 0; /* PREVENT SHRINKING */
+
+    /* Reset properties from vertical stacking */
+    flex-basis: auto;
+    flex-grow: 0;
+
+    /* Limit panel height and allow internal vertical scroll */
+    max-height: 50vh; /* Adjust as needed */
+    /* Ensure internal flex layout still works */
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Ensure internal lists still scroll vertically */
+  .panel-content {
+    max-height: none; /* Remove limit, panel max-height controls it */
+  }
+  #system-status-list,
+  #agent-status-list,
+  .log-feed-list {
+    /* Take remaining space in panel-content, scroll vertically */
+    flex-grow: 1;
+    overflow-y: auto;
+    min-height: 50px; /* Ensure some minimum space */
+    /* max-height calculation removed - rely on flex grow */
+  }
+  #agent-status-list {
+    /* Keep specific limits if needed */
+    /* max-height: 25vh; */
+  }
+}
+
+/* --- Small Screens / Landscape Phones --- */
+@media (max-width: 768px) {
+  /* Inherits single-column layout and horizontal scrolling sidebar */
+  body {
+    font-size: 15px;
+  }
+  .sim-header {
+    padding: 10px 15px;
+  }
+  .sim-title {
+    font-size: 0.9rem;
+  }
+  .sim-time-display {
+    font-size: 0.8rem;
+  }
+  .sim-main-content {
+    padding: 15px;
+    gap: 15px;
+  }
+  .message-display {
+    padding: 10px;
+  }
+  .message {
+    max-width: 90%;
+  }
+  .player-input-form {
+    padding: 10px;
+  }
+  #player-input {
+    font-size: 0.95rem;
+  }
+
+  /* Adjust horizontal sidebar */
+  .sim-column-side {
+    gap: 12px;
+    padding-left: 15px; /* Add edge padding */
+    padding-right: 15px;
+    padding-top: 5px;
+    padding-bottom: 10px; /* Space for scrollbar */
+  }
+  .sim-column-side::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  .status-panel {
+    width: 280px; /* Slightly narrower panels */
+    max-height: 55vh; /* Allow slightly taller panels */
+  }
+
+  /* Adjust panel internal styles */
+  .panel-header {
+    padding: 15px 15px 0 15px;
+  }
+  .panel-content {
+    padding: 10px 15px 15px 15px;
+  }
+  .panel-header h4 {
+    font-size: 0.9rem;
+    padding-bottom: 8px;
+  }
+  .status-item {
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+  }
+  .log-entry {
+    font-size: 0.7rem;
+  }
+}
+
+/* --- Extra Small Screens / Portrait Phones --- */
+@media (max-width: 480px) {
+  /* Inherits single-column layout and horizontal scrolling sidebar */
+  .sim-header {
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+  }
+  .sim-time-display {
+    align-self: flex-start;
+  }
+  .sim-status {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+  }
+  .sim-main-content {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  /* Adjust horizontal sidebar */
+  .sim-column-side {
+    gap: 10px;
+    padding-left: 10px; /* Edge padding */
+    padding-right: 10px;
+    padding-bottom: 8px;
+    /* Optional: Hide scrollbar visually */
+    /* scrollbar-width: none; -ms-overflow-style: none; */
+  }
+  /* .sim-column-side::-webkit-scrollbar { display: none; } */
+
+  .status-panel {
+    width: 250px; /* Even narrower */
+    max-height: 60vh; /* Allow taller */
+  }
+
+  /* Adjust other elements */
+  .message {
+    max-width: 95%;
+    font-size: 0.9rem;
+  }
+  .btn {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+  .message-actions .btn {
+    padding: 5px 12px;
+    font-size: 0.85rem;
+  }
+  .btn-agent-action {
+    padding: 4px 6px;
+    font-size: 0.9rem;
+  }
+  .player-input-form {
+    gap: 5px;
+  }
+  .input-prefix {
+    font-size: 1rem;
+  }
+  #player-input {
+    font-size: 0.9rem;
+  }
+  .setup-content {
+    padding: 20px;
+  } /* Reduce setup padding */
+  .panel-header {
+    padding: 12px 12px 0 12px;
+  }
+  .panel-content {
+    padding: 8px 12px 12px 12px;
+  }
+  .panel-header h4 {
+    font-size: 0.85rem;
+  }
+}
+
+/* --- ## END: MOBILE / TABLET LAYOUT CHANGES ## --- */
+
+/* --- End of simulation.css --- */
+/* --- Additions for Command Helper Dropdown --- */
+
+/* Position the form relative for dropdown positioning */
+.player-input-form {
+  /* flex-shrink, display, align-items, gap, padding, background, border-top, border-radius remain */
+  position: relative; /* ADD THIS */
+  /* border, transition remain */
+}
+
+/* Command Helper Trigger Button */
+.btn-command-helper {
+  background: none;
+  border: none;
+  color: var(--text-tertiary); /* Use a less prominent color */
+  padding: 5px;
+  margin-right: 5px; /* Add some space before prefix */
+  cursor: pointer;
+  line-height: 1;
+  transition: color var(--transition-fast), transform 0.1s ease;
+}
+.btn-command-helper svg {
+  width: 18px; /* Adjust size */
+  height: 18px;
+  display: block;
+}
+.btn-command-helper:hover {
+  color: var(--neon-cyan);
+}
+.btn-command-helper:active {
+  transform: scale(0.9);
+}
+
+/* Command Dropdown Container */
+.command-dropdown {
+  /* position: absolute; */
+  /* bottom: calc(100% + 5px); */ /* REMOVE THIS LINE */
+  top: calc(100% + 5px); /* ADD THIS LINE (Position below form) */
+  left: 10px;
+  min-width: 200px;
+  background-color: var(--dark-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  padding: 5px;
+  display: block; /* Added for safety */
+}
+.command-dropdown.hidden {
+  display: none; /* Simple hide/show for now */
+  /* Or use opacity/visibility for transitions: */
+  /* opacity: 0; */
+  /* visibility: hidden; */
+}
+
+/* Command Items inside the dropdown */
+.command-item {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  margin: 0;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-mono); /* Use mono font for commands */
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+.command-item:hover {
+  background-color: var(--accent-bg);
+  color: var(--text-primary);
+}
+/* --- End Command Helper Styles --- */

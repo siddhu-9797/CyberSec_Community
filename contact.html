@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Us | Enter The Breach</title>
+
+    <!-- Favicons -->
+    <link rel="icon" href="/static/images/haktopus_favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" href="/static/images/LOGO.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Outfit:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="/static/css/style.css" />
+
+    <!-- Specific styles for contact page (can be added to style.css or inline) -->
+    <style>
+      .contact-content-wrapper {
+        background-color: var(--dark-surface);
+        color: var(--text-secondary);
+      }
+      .contact-content-wrapper .container {
+        max-width: 800px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+      }
+      .contact-content-wrapper h1 {
+        color: var(--text-primary);
+        font-size: clamp(2rem, 4vw, 2.8rem);
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      .contact-content-wrapper h2 {
+        color: var(--neon-cyan);
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        margin-top: 30px;
+        margin-bottom: 20px;
+      }
+      .contact-info p,
+      .contact-form-section p {
+        line-height: 1.8;
+        margin-bottom: 1em;
+      }
+      .contact-info a {
+        color: var(--neon-green);
+        font-weight: 500;
+      }
+      .contact-info a:hover {
+        text-decoration: underline;
+      }
+
+      /* Form Styles */
+      .contact-form .form-group {
+        margin-bottom: 25px;
+      }
+      .contact-form label {
+        display: block;
+        font-family: var(--font-mono);
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+      }
+      .contact-form input[type="text"],
+      .contact-form input[type="email"],
+      .contact-form textarea {
+        width: 100%;
+        padding: 12px 15px;
+        background-color: var(--dark-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 6px;
+        color: var(--text-primary);
+        font-family: var(--font-sans);
+        font-size: 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+      .contact-form input[type="text"]:focus,
+      .contact-form input[type="email"]:focus,
+      .contact-form textarea:focus {
+        outline: none;
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 0 2px rgba(var(--neon-cyan-rgb, 9, 238, 245), 0.3); /* Assuming neon-cyan-rgb exists or define it */
+      }
+      .contact-form textarea {
+        min-height: 150px;
+        resize: vertical;
+      }
+      .contact-form .btn-submit-contact {
+        /* Uses .btn and .btn-primary styles from your main CSS */
+        padding: 14px 35px;
+        font-size: 1rem;
+        margin-top: 10px;
+      }
+      .form-message {
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        text-align: center;
+      }
+      .form-message.success {
+        background-color: rgba(3, 252, 132, 0.1); /* neon-green with alpha */
+        border: 1px solid var(--neon-green);
+        color: var(--neon-green);
+      }
+      .form-message.error {
+        background-color: rgba(255, 59, 48, 0.1); /* alert-red with alpha */
+        border: 1px solid var(--alert-red);
+        color: var(--alert-red);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+      <div class="preloader-icon">
+        <svg width="80" height="80" viewBox="0 0 100 100">
+          <path
+            class="preloader-path path1"
+            d="M 50 50 m -40 0 a 40 40 0 1 0 80 0 a 40 40 0 1 0 -80 0"
+            stroke="#09eef5"
+            stroke-width="4"
+            fill="none"
+          ></path>
+          <path
+            class="preloader-path path2"
+            d="M 50 50 m -30 0 a 30 30 0 1 0 60 0 a 30 30 0 1 0 -60 0"
+            stroke="#03fc84"
+            stroke-width="4"
+            fill="none"
+          ></path>
+          <text
+            x="50"
+            y="55"
+            text-anchor="middle"
+            fill="#f0f8ff"
+            font-size="12"
+            font-family="'JetBrains Mono', monospace"
+          >
+            LOADING
+          </text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="site-header" id="site-header">
+      <div class="container header-container">
+        <a href="/" class="logo">
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 100 100"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M50 10 C 20 10, 10 30, 10 50 C 10 70, 20 90, 50 90 C 80 90, 90 70, 90 50 C 90 30, 80 10, 50 10 Z M 50 20 C 72 20, 80 35, 80 50 C 80 65, 72 80, 50 80 C 28 80, 20 65, 20 50 C 20 35, 28 20, 50 20 Z M45 40 L45 60 L55 50 Z"
+            />
+            <!-- Example Placeholder SVG -->
+          </svg>
+          <span>HAKTOPUS</span>
+        </a>
+        <nav class="main-nav" id="main-nav">
+          <a href="/">Back to Simulation</a>
+        </nav>
+        <button
+          class="mobile-nav-toggle"
+          id="mobile-nav-toggle"
+          aria-label="Toggle navigation"
+          aria-expanded="false"
+          aria-controls="main-nav"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="contact-content-wrapper section-padding">
+        <div class="container">
+          <h1>Contact Us</h1>
+
+          <div class="contact-info">
+            <h2>Get in Touch Directly</h2>
+            <p>
+              For general inquiries, support, or feedback, you can reach us via
+              email:
+            </p>
+            <p>
+              <a href="mailto:support@haktopus.com">support@haktopus.com</a>
+            </p>
+            <!-- REPLACE THIS -->
+            <p>
+              We aim to respond to all inquiries within 24-48 business hours.
+            </p>
+          </div>
+
+          <div class="contact-form-section">
+            <h2>Send Us a Message</h2>
+            <p>
+              Alternatively, you can use the form below to send us your
+              questions or feedback directly from our website.
+            </p>
+
+            <div
+              id="form-response-message"
+              class="form-message"
+              style="display: none"
+            ></div>
+
+            <form id="contactForm" class="contact-form">
+              <div class="form-group">
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" name="name" required />
+              </div>
+              <div class="form-group">
+                <label for="email">Your Email:</label>
+                <input type="email" id="email" name="email" required />
+              </div>
+              <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required />
+              </div>
+              <div class="form-group">
+                <label for="message">Message/Feedback:</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="6"
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-submit-contact">
+                Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer
+      class="site-footer-bottom section-padding"
+      style="padding-top: 35px; padding-bottom: 35px"
+    >
+      <div class="container footer-bottom-container">
+        <div class="footer-links">
+          <a href="/privacy-policy">Privacy Policy</a>
+          <a href="/terms-of-service">Terms of Service</a>
+          <a href="/contact">Contact Us</a>
+        </div>
+        <div class="footer-copyright">
+          © <span id="currentYear"></span> HAKTOPUS. All Rights Reserved.
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Standard scripts (year, mobile nav, preloader if not in global script.js)
+      document.getElementById("currentYear").textContent =
+        new Date().getFullYear();
+
+      const mobileNavToggle = document.getElementById("mobile-nav-toggle");
+      const mainNav = document.getElementById("main-nav");
+      if (mobileNavToggle && mainNav) {
+        mobileNavToggle.addEventListener("click", () => {
+          mainNav.classList.toggle("active");
+          mobileNavToggle.classList.toggle("active");
+          const isExpanded = mainNav.classList.contains("active");
+          mobileNavToggle.setAttribute("aria-expanded", isExpanded);
+          document.body.classList.toggle("no-scroll", isExpanded);
+        });
+      }
+
+      // Preloader logic (if not handled by a global script.js)
+      window.addEventListener("load", function () {
+        const preloader = document.getElementById("preloader");
+        if (preloader) preloader.classList.add("hidden");
+        document.body.classList.add("loaded");
+      });
+
+      // Contact Form Submission Logic
+      const contactForm = document.getElementById("contactForm");
+      const formResponseMessage = document.getElementById(
+        "form-response-message"
+      );
+
+      if (contactForm) {
+        contactForm.addEventListener("submit", async function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          const formData = new FormData(contactForm);
+          const data = Object.fromEntries(formData.entries());
+
+          // Basic client-side validation (can be more extensive)
+          if (!data.name || !data.email || !data.subject || !data.message) {
+            showFormMessage("Please fill out all required fields.", "error");
+            return;
+          }
+          if (!validateEmail(data.email)) {
+            showFormMessage("Please enter a valid email address.", "error");
+            return;
+          }
+
+          // Disable button to prevent multiple submissions
+          const submitButton = contactForm.querySelector(
+            'button[type="submit"]'
+          );
+          submitButton.disabled = true;
+          submitButton.textContent = "Sending...";
+
+          try {
+            // Replace '/api/contact/send' with your actual FastAPI endpoint
+            const response = await fetch("/api/contact/send", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              showFormMessage(
+                result.message || "Message sent successfully!",
+                "success"
+              );
+              contactForm.reset(); // Clear the form
+            } else {
+              showFormMessage(
+                result.detail || "An error occurred. Please try again.",
+                "error"
+              );
+            }
+          } catch (error) {
+            console.error("Form submission error:", error);
+            showFormMessage(
+              "A network error occurred. Please try again.",
+              "error"
+            );
+          } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = "Send Message";
+          }
+        });
+      }
+
+      function showFormMessage(message, type) {
+        if (formResponseMessage) {
+          formResponseMessage.textContent = message;
+          formResponseMessage.className = "form-message " + type; // Reset classes and add new type
+          formResponseMessage.style.display = "block";
+        }
+      }
+
+      function validateEmail(email) {
+        const re =
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+      }
+    </script>
+    <script>
+      window.addEventListener("load", function () {
+        const preloader = document.getElementById("preloader");
+        const body = document.body;
+
+        if (preloader) {
+          preloader.classList.add("hidden"); // Hides the preloader
+        } else {
+          console.warn("Preloader element not found."); // Good to have this check
+        }
+
+        if (body) {
+          body.classList.add("loaded"); // Makes the body visible
+        } else {
+          console.error("Body element not found - critical error!");
+        }
+      });
+    </script>
+  </body>
+</html>
